@@ -1,0 +1,21 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    @apply font-default h-full;
+}
+
+*:focus {
+    @apply outline-none;
+}
+
+#blazor-error-ui {
+    @apply bg-red-500 bottom-0 hidden left-0 px-3 py-5 fixed w-full z-[1000];
+}
+
+    #blazor-error-ui .dismiss {
+        @apply cursor-pointer absolute right-3 top-2;
+    }

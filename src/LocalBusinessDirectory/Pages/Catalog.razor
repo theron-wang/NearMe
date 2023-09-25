@@ -1,0 +1,47 @@
+﻿@page "/catalog"
+@using LocalBusinessDirectory.Data.Businesses
+
+@inject IBusinessData businessData
+
+<h1 class="text-3xl mb-4">Small Businesses Near You</h1>
+
+<div class="flex pb-4 border-b mb-8">
+    <label class="relative block mr-8 group">
+        <span class="sr-only">Search by location</span>
+        <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400 group-valid:hidden">
+            <i class="fa-solid fa-location-dot"></i>
+        </span>
+        <input class="block rounded-lg border-2 pl-6 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Location" aria-label="Search by city" />
+    </label>
+    <label class="relative block mr-auto">
+        <span class="sr-only">Search by name</span>
+        <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+            <i class="fa-solid fa-store"></i>
+        </span>
+        <input class="block rounded-lg border-2 pl-7 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Name" aria-label="Search by name" />
+    </label>
+    <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer" tabindex="0">
+        <div>
+            <i class="fa-solid fa-filter mr-2"></i>
+            Filter
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-col gap-y-8">
+    @if (businesses is not null)
+    {
+        <Virtualize Items="businesses" Context="business" OverscanCount="10">
+            <BusinessDisplay Business="business" />
+        </Virtualize>
+    }
+</div>
+
+@code {
+    private List<Business>? businesses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        businesses = await businessData.GetBusinesses();
+    }
+}

@@ -1,0 +1,40 @@
+﻿@inject NavigationManager nav
+
+@if (Business is not null)
+{
+    <div class="bg-green-500/20 shadow rounded p-8 cursor-pointer flex transition hover:bg-green-500/30" @onclick="@(() => nav.NavigateTo($"/business/{Business.Id}"))">
+        <div class="h-48 max-h-48 w-1/4 min-w-1/4 overflow-hidden">
+            <img src="images/@Business.ImageUrl" class="rounded h-full object-cover" />
+        </div>
+        <div class="max-h-48 overflow-hidden px-8">
+            <div class="font-bold mb-3">@Business.Name</div>
+            <div class="mb-4 flex items-center">
+                <StarDisplay Stars="@Business.Rating" />
+                <span class="ml-2">(@Business.NumberOfRatings)</span>
+            </div>
+            <div class="text-sm text-black/80">@Business.Description</div>
+        </div>
+        <div class="flex flex-col items-end">
+            @if (Business.IsPartnered)
+            {
+                <div class="group relative">
+                    <i class="fa-solid fa-star text-green-800"></i>
+                    <div class="opacity-0 absolute bottom-6 left-1/2 -translate-x-1/2 transition duration-100 ease-in-out pointer-events-none text-white text-center flex flex-col items-center group-hover:opacity-100 group-hover:pointer-events-auto">
+                        <div class="bg-neutral-900 text-xs rounded whitespace-nowrap p-1">
+                            [Our Brand] Member
+                        </div>
+                        <div class="w-0 h-0 border-4 border-b-0 border-x-transparent border-t-neutral-900"></div>
+                    </div>
+                </div>
+            }
+            <div class="text-sm mt-auto">
+                @Business.CategoryName
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Business? Business { get; set; }
+}

@@ -1,0 +1,24 @@
+﻿<div class="flex items-center gap-x-2 text-yellow-500" aria-label="@Stars stars">
+    @for (int i = 1; i <= Stars; i++)
+    {
+        <i class="fa-solid fa-star"></i>
+    }
+    @if (Stars * 2 % 2 == 1)
+    {
+        <i class="fa-solid fa-star-half-stroke"></i>
+    }
+    @for (int i = 5; i > Math.Round(Stars); i--)
+    {
+        <i class="fa-regular fa-star"></i>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public double Stars { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Stars = Math.Round(Stars * 2) / 2;
+    }
+}
