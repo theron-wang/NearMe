@@ -8,4 +8,9 @@ public class Address
     public string City { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;
     public string ZipCode { get; set; } = string.Empty;
+
+    public string Format()
+    {
+        return $"{Number} {Street}{(string.IsNullOrWhiteSpace(Suite) ? "" : $", {Suite}")}, {City}, {State} {ZipCode}";
+    }
 }

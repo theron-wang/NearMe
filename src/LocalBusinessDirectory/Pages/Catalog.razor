@@ -1,7 +1,9 @@
 ﻿@page "/catalog"
 @using LocalBusinessDirectory.Data.Businesses
+@using LocalBusinessDirectory.Data.Categories;
 
 @inject IBusinessData businessData
+@inject ICategoryData categoryData
 
 <h1 class="text-3xl mb-4">Small Businesses Near You</h1>
 
@@ -11,37 +13,143 @@
         <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400 group-valid:hidden">
             <i class="fa-solid fa-location-dot"></i>
         </span>
-        <input class="block rounded-lg border-2 pl-6 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Location" aria-label="Search by city" />
+        <input @bind="location" @bind:event="oninput" @bind:after="Filter" class="block rounded-lg border-2 pl-6 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Location" aria-label="Search by city" />
     </label>
     <label class="relative block mr-auto">
         <span class="sr-only">Search by name</span>
         <span class="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
             <i class="fa-solid fa-store"></i>
         </span>
-        <input class="block rounded-lg border-2 pl-7 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Name" aria-label="Search by name" />
+        <input @bind="name" @bind:event="oninput" @bind:after="Filter" class="block rounded-lg border-2 pl-7 pr-3 py-1.5 w-52 transition placeholder:italic placeholder:text-sm focus:border-green-800" placeholder="Name" aria-label="Search by name" />
     </label>
-    <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer" tabindex="0">
+    <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer group relative" tabindex="0">
         <div>
             <i class="fa-solid fa-filter mr-2"></i>
             Filter
+        </div>
+        <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-[1000] pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
+            <div class="font-bold uppercase mb-2 px-2">Rating</div>
+            
+            @for (int i = 1; i <= 5; i++)
+            {
+                var rating = i;
+                <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300">
+                    <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
+                    <span class="mr-2">
+                        <StarDisplay Stars="i" SmallSpacing="true" />
+                    </span>
+                    @i.ToString("0.0")@(i != 5 ? "+" : "") stars
+                </label>
+            }
+
+            @if (categories is not null)
+            {
+                <div class="font-bold uppercase my-2 px-2">Category</div>
+
+                @foreach (var category in categories)
+                {
+                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+                        <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchCategories.Contains(category))" @oninput="() => ToggleCategory(category)" />
+                        @category.Name
+                    </label>
+                }
+            }
+
+            <div class="font-bold uppercase my-2 px-2">Membership</div>
+
+            <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+                <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" @bind="membership" @bind:after="Filter" />
+                Is a member
+            </label>
         </div>
     </div>
 </div>
 
 <div class="flex flex-col gap-y-8">
-    @if (businesses is not null)
+    @if (viewBusinesses is not null)
     {
-        <Virtualize Items="businesses" Context="business" OverscanCount="10">
-            <BusinessDisplay Business="business" />
+        @if (viewBusinesses.Count == 0)
+        {
+            <p>No businesses could be found. Try broadening your search filter.</p>
+        }
+        else
+        {
+            <Virtualize Items="viewBusinesses" Context="business" OverscanCount="10">
+                <BusinessDisplay Business="business" />
         </Virtualize>
+        }
     }
 </div>
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Type { get; set; }
+
     private List<Business>? businesses;
+    private List<Business>? viewBusinesses;
+    private List<Category>? categories;
+
+    private string? name;
+    private string? location;
+    private int? searchRating;
+    private List<Category> searchCategories = new();
+    private bool membership = false;
 
     protected override async Task OnInitializedAsync()
     {
         businesses = await businessData.GetBusinesses();
+        categories = await categoryData.GetCategories();
+
+        if (string.IsNullOrEmpty(Type) == false && categories.Any(c => c.Name == Type))
+        {
+            searchCategories.Add(categories.First(c => c.Name == Type));
+        }
+
+        Filter();
+    }
+
+    private void ToggleCategory(Category category)
+    {
+        if (searchCategories.Contains(category))
+        {
+            searchCategories.Remove(category);
+        }
+        else
+        {
+            searchCategories.Add(category);
+        }
+
+        Filter();
+    }
+
+    private void Filter()
+    {
+        var addressTokenized = location?.ToLower().Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+        viewBusinesses = businesses?.Where(b =>
+            (addressTokenized is null || 
+                addressTokenized.All(a => b.Address.Street.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.City.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.State.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.ZipCode.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.Number.ToString().Contains(a, StringComparison.InvariantCultureIgnoreCase))) &&
+            (name is null || b.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)) &&
+            (searchRating is null || b.Rating >= searchRating) &&
+            (searchCategories.Count == 0 || searchCategories.Any(c => c.Name.Equals(b.CategoryName, StringComparison.InvariantCultureIgnoreCase))) &&
+            (membership == false || b.IsPartnered)
+        ).ToList();
+    }
+
+    private void SetSearchRating(int rating)
+    {
+        if (searchRating == rating)
+        {
+            searchRating = null;
+        }
+        else
+        {
+            searchRating = rating;
+        }
+        Filter();
     }
 }

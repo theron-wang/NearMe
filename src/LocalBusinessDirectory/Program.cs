@@ -1,4 +1,5 @@
 using LocalBusinessDirectory.Data.Businesses;
+using LocalBusinessDirectory.Data.Categories;
 using LocalBusinessDirectory.Data.Sql;
 using Microsoft.Extensions.FileProviders;
 
@@ -9,6 +10,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IBusinessData, BusinessData>();
+builder.Services.AddSingleton<ICategoryData, CategoryData>();
 
 var app = builder.Build();
 
