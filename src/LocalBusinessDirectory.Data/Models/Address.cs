@@ -2,15 +2,15 @@
 
 public class Address
 {
-    public int Number { get; set; }
-    public string Street { get; set; } = string.Empty;
-    public string? Suite { get; set; }
-    public string City { get; set; } = string.Empty;
-    public string State { get; set; } = string.Empty;
-    public string ZipCode { get; set; } = string.Empty;
+    public int AddressNumber { get; set; }
+    public string AddressStreet { get; set; } = string.Empty;
+    public string? AddressSuite { get; set; }
+    public string AddressCity { get; set; } = string.Empty;
+    public string AddressState { get; set; } = string.Empty;
+    public string AddressZipCode { get; set; } = string.Empty;
 
     public string Format()
     {
-        return $"{Number} {Street}{(string.IsNullOrWhiteSpace(Suite) ? "" : $", {Suite}")}, {City}, {State} {ZipCode}";
+        return $"{AddressNumber} {AddressStreet}{(string.IsNullOrWhiteSpace(AddressSuite) ? "" : $", {AddressSuite}")}, {AddressCity}, {AddressState} {AddressZipCode}";
     }
 }

@@ -15,11 +15,11 @@ public class BusinessData : IBusinessData
             {
                 Address = new()
                 {
-                    City = "New York City",
-                    Number = 100,
-                    State = "NY",
-                    Street = "W 53rd Street",
-                    ZipCode = "10119"
+                    AddressCity = "New York City",
+                    AddressNumber = 100,
+                    AddressState = "NY",
+                    AddressStreet = "W 53rd Street",
+                    AddressZipCode = "10119"
                 },
                 CategoryName = "Store",
                 Description = """
@@ -38,11 +38,11 @@ public class BusinessData : IBusinessData
             {
                 Address = new()
                 {
-                    City = "New York City",
-                    Number = 105,
-                    State = "NY",
-                    Street = "S 4th Avenue",
-                    ZipCode = "10119"
+                    AddressCity = "New York City",
+                    AddressNumber = 105,
+                    AddressState = "NY",
+                    AddressStreet = "S 4th Avenue",
+                    AddressZipCode = "10119"
                 },
                 CategoryName = "Restaurant",
                 Description = """

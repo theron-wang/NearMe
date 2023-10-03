@@ -128,11 +128,11 @@
         var addressTokenized = location?.ToLower().Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
         viewBusinesses = businesses?.Where(b =>
             (addressTokenized is null || 
-                addressTokenized.All(a => b.Address.Street.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
-                         b.Address.City.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
-                         b.Address.State.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
-                         b.Address.ZipCode.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
-                         b.Address.Number.ToString().Contains(a, StringComparison.InvariantCultureIgnoreCase))) &&
+                addressTokenized.All(a => b.Address.AddressStreet.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.AddressCity.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.AddressState.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.AddressZipCode.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
+                         b.Address.AddressNumber.ToString().Contains(a, StringComparison.InvariantCultureIgnoreCase))) &&
             (name is null || b.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)) &&
             (searchRating is null || b.Rating >= searchRating) &&
             (searchCategories.Count == 0 || searchCategories.Any(c => c.Name.Equals(b.CategoryName, StringComparison.InvariantCultureIgnoreCase))) &&
