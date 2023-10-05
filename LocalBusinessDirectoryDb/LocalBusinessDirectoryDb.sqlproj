@@ -72,7 +72,6 @@
     <Build Include="Stored Procedures\Businesses\spBusinesses_Update.sql" />
     <Build Include="Stored Procedures\Ratings\spRatings_GetRating.sql" />
     <Build Include="Stored Procedures\Ratings\spRatings_Rate.sql" />
-    <Build Include="Stored Procedures\Ratings\spRatings_RemoveRating.sql" />
     <Build Include="Offers.sql" />
     <Build Include="Stored Procedures\Offers\spOffers_Create.sql" />
     <Build Include="Stored Procedures\Offers\spOffers_Update.sql" />

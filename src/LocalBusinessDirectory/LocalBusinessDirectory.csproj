@@ -4,11 +4,16 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>8f771b25-9b51-4e7c-a5fc-5b9b8aa6f75b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\LocalBusinessDirectory.Data\LocalBusinessDirectory.Data.csproj" />
     <ProjectReference Include="..\LocalBusinessDirectory.Data\LocalBusinessDirectory.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="images\" />
   </ItemGroup>
 
 </Project>

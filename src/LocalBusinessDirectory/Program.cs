@@ -1,6 +1,4 @@
-using LocalBusinessDirectory.Data.Businesses;
-using LocalBusinessDirectory.Data.Categories;
-using LocalBusinessDirectory.Data.Sql;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +9,24 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IBusinessData, BusinessData>();
 builder.Services.AddSingleton<ICategoryData, CategoryData>();
+builder.Services.AddSingleton<IOfferData, OfferData>();
+builder.Services.AddSingleton<IRater, Rater>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
+builder.Services.AddSingleton<IUserStore<User>, UserData>();
+
+builder.Services.AddAuthentication()
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+        options.SlidingExpiration = true;
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentityCore<User>()
+    .AddUserStore<UserData>()
+    .AddSignInManager<SignInManager<User>>();
 
 var app = builder.Build();
 
@@ -32,6 +48,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseRouting();
 
 app.MapBlazorHub();

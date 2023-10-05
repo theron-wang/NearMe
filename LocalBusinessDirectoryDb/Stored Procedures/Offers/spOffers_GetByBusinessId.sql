@@ -2,11 +2,17 @@
     @BusinessId VARCHAR(36)
 AS
 BEGIN
-    select o.*,
-        AVG(CAST(r.Rating AS DECIMAL(3, 1))) AS Rating,
-		SUM(1) AS NumberOfRatings
+    with RatingsAggregated as (
+        select
+            r.RelatedTo,
+            AVG(CAST(r.Rating as decimal(3, 1))) as Rating,
+            COUNT(*) as NumberOfRatings
+        from [dbo].[Ratings] as r
+        group by r.RelatedTo
+    )
+
+    select o.*, r.Rating, r.NumberOfRatings
     from [dbo].[Offers] as o
-	inner join [dbo].[Ratings] as r on r.RelatedTo=o.Id
-    where
-        o.BusinessId = @BusinessId;
+	inner join RatingsAggregated as r on r.RelatedTo=o.Id
+    where o.BusinessId = @BusinessId;
 END;

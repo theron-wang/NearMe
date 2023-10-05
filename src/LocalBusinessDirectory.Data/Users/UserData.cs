@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Identity;
 namespace LocalBusinessDirectory.Data.Users;
 public class UserData : IUserStore<User>, IUserRoleStore<User>
 {
-    private readonly SqlAccess _sql;
+    private readonly ISqlAccess _sql;
 
-    public UserData(SqlAccess sql)
+    public UserData(ISqlAccess sql)
     {
         _sql = sql;
     }

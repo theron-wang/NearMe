@@ -1,63 +1,41 @@
 ﻿using LocalBusinessDirectory.Data.Models;
+using LocalBusinessDirectory.Data.Sql;
 
 namespace LocalBusinessDirectory.Data.Businesses;
 public class BusinessData : IBusinessData
 {
+    private readonly ISqlAccess _sql;
+
+    public BusinessData(ISqlAccess sql)
+    {
+        _sql = sql;
+    }
+
+    public async Task CreateBusiness(Business business)
+    {
+        await _sql.ExecuteAsync("spBusinesses_Create", business);
+    }
+
     public async Task<List<Business>> GetBusinesses()
     {
-        // Simulate delay from database
-        await Task.Delay(Random.Shared.Next(100, 1000));
-
-        // Sample content
-        return new List<Business>()
+        return await _sql.GetAsync<Business, Business, Address>("spBusinesses_GetAll", new { }, (b, a) =>
         {
-            new()
-            {
-                Address = new()
-                {
-                    AddressCity = "New York City",
-                    AddressNumber = 100,
-                    AddressState = "NY",
-                    AddressStreet = "W 53rd Street",
-                    AddressZipCode = "10119"
-                },
-                CategoryName = "Store",
-                Description = """
-                Joey's Pet Store is your community's go-to for pets and supplies. We prioritize ethical 
-                sourcing, expert guidance, and community involvement. Whether you're a new pet parent or a 
-                seasoned enthusiast, Joey's is here to ensure your pets thrive.
-                """,
-                Id = "fe529c40-5532-488f-a0bf-7e606fbf2883",
-                ImageUrl = "6e46dcd7-3d7c-41e1-9155-cade1ae82855.webp",
-                IsPartnered = true,
-                Name = "Joey's Pet Store",
-                Rating = 3.5d,
-                NumberOfRatings = 69
-            },
-            new()
-            {
-                Address = new()
-                {
-                    AddressCity = "New York City",
-                    AddressNumber = 105,
-                    AddressState = "NY",
-                    AddressStreet = "S 4th Avenue",
-                    AddressZipCode = "10119"
-                },
-                CategoryName = "Restaurant",
-                Description = """
-                At John's Pizzeria, we're renowned for crafting authentic, mouthwatering pizzas using the
-                freshest ingredients. Our family-friendly atmosphere and scrumptious slices have made us the
-                go-to pizza destination in town. Come savor the flavors that have delighted taste buds for
-                generations.
-                """,
-                Id = "96773fc1-805d-4e5b-9a90-8ce2da6b28d7",
-                ImageUrl = "4ffbc4d4-63c0-4aff-8478-e7837dde25ee.jpg",
-                IsPartnered = false,
-                Name = "John's Pizzeria",
-                Rating = 4d,
-                NumberOfRatings = 102
-            }
-        };
+            b.Address = a;
+            return b;
+        });
+    }
+
+    public async Task<Business?> GetBusinessById(string id)
+    {
+        return (await _sql.GetAsync<Business, Business, Address>("spBusinesses_GetById", new { Id = id }, (b, a) =>
+        {
+            b.Address = a;
+            return b;
+        })).FirstOrDefault();
+    }
+
+    public async Task UpdateBusiness(Business business)
+    {
+        await _sql.ExecuteAsync("spBusinesses_Update", business);
     }
 }

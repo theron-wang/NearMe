@@ -137,7 +137,7 @@
             (searchRating is null || b.Rating >= searchRating) &&
             (searchCategories.Count == 0 || searchCategories.Any(c => c.Name.Equals(b.CategoryName, StringComparison.InvariantCultureIgnoreCase))) &&
             (membership == false || b.IsPartnered)
-        ).ToList();
+        ).OrderByDescending(o => o.IsPartnered).ToList();
     }
 
     private void SetSearchRating(int rating)
