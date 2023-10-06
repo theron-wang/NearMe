@@ -6,3 +6,4 @@ global using LocalBusinessDirectory.Data.Offers;
 global using LocalBusinessDirectory.Data.Ratings;
 global using LocalBusinessDirectory.Data.Sql;
 global using LocalBusinessDirectory.Data.Users;
+global using LocalBusinessDirectory.Validation;

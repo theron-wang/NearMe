@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Josefin+Sans&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -19,3 +19,8 @@ html, body {
     #blazor-error-ui .dismiss {
         @apply cursor-pointer absolute right-3 top-2;
     }
+
+.auth-bg::before {
+    content: "";
+    @apply bg-[url('/auth-bg.webp')] bg-cover bg-no-repeat h-full w-full fixed top-0 left-0 z-[-1] blur-sm;
+}

@@ -1,0 +1,105 @@
+﻿@page "/join"
+@model LocalBusinessDirectory.Pages.JoinModel
+@{
+    Layout = "_AuthLayout";
+    ViewBag.Title = "Join";
+}
+
+<div class="h-full grid grid-cols-2 gap-x-20 px-20 py-10 auth-bg">
+    <div class="rounded-xl bg-neutral-800/95 backdrop-blur p-8">
+        <div class="text-xl text-white text-center mb-1">
+            Sign in
+        </div>
+        <div class="text-white/75 text-center mb-4 pb-4 border-b border-b-white/30">
+            Welcome back!
+        </div>
+        <form method="post">
+            @if (ModelState["Error"]?.Errors is not null)
+            {
+                <div class="px-2 py-4 rounded bg-red-100 border border-red-300 text-red-700 mb-4">
+                    @ModelState["Error"]?.Errors[0].ErrorMessage
+                </div>
+            }
+
+            <div class="mb-8">
+                <label for="username" class="text-white">
+                    Username
+                </label>
+                <div class="relative block mt-2">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-6 text-neutral-400">
+                        <i class="fa-solid fa-user"></i>
+                    </span>
+                    <input asp-for="LoginModel.Username" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-3 pl-12 pr-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Enter username" id="username" />
+                </div>
+                <span asp-validation-for="LoginModel.Username" class="text-sm text-red-400" />
+            </div>
+            <div class="mb-8">
+                <label for="password" class="text-white">
+                    Password
+                </label>
+                <div class="relative block mt-2">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-6 text-neutral-400">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input asp-for="LoginModel.Password" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-3 pl-12 pr-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Enter password" id="password" type="password" />
+                </div>
+                <span asp-validation-for="LoginModel.Password" class="text-sm text-red-400" />
+            </div>
+            <div class="mb-8">
+                <label class="text-white flex items-center">
+                    <input asp-for="LoginModel.RememberMe" type="checkbox" class="accent-green-600 w-4 h-4 mr-2" />
+                    Remember me
+                </label>
+            </div>
+            <button type="submit" class="bg-green-600 w-full text-white rounded-full py-3 text-center transition hover:bg-green-700">Sign in</button>
+            <a class="text-white/70 mt-8 text-center block text-xs" href="/">Return to homepage</a>
+        </form>
+    </div>
+    <div class="rounded-xl backdrop-blur bg-white/95 p-8">
+        <div class="text-xl text-black text-center mb-1">
+            Don't have an account?
+        </div>
+        <div class="text-black/75 text-center mb-8 pb-4 border-b border-b-black/30">
+            Register today.
+        </div>
+
+        <div class="mb-8">
+            <div class="text-2xl">
+                Local Businesses
+            </div>
+
+            <div class="my-4 text-sm">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-check me-4"></i> Access to large customer base
+                </div>
+                <div class="flex items-center">
+                    <i class="fa-solid fa-check me-4"></i> Easy-to-use product and service advertising system
+                </div>
+            </div>
+
+            <a class="block bg-green-400 w-full text-white rounded-full py-3 text-center transition hover:bg-green-500" href="register?business=true">Register your business</a>
+        </div>
+
+        <div>
+            <div class="text-2xl">
+                Customer
+            </div>
+
+            <div class="my-4 text-sm">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-check me-4"></i> Access to catalog of useful products, and services from your favorite businesses
+                </div>
+                <div class="flex items-center">
+                    <i class="fa-solid fa-check me-4"></i> Simple and intuitive ordering system
+                </div>
+                <div class="flex items-center">
+                    <i class="fa-solid fa-check me-4"></i> Discounts of up to 15%
+                </div>
+            </div>
+
+            <a class="block bg-yellow-400 w-full text-white rounded-full py-3 text-center transition hover:bg-yellow-500" href="register">Join now</a>
+        </div>
+
+        <a class="text-black/70 mt-8 text-center block text-xs" href="/pricing">View our pricing plans</a>
+    </div>
+</div>

@@ -8,12 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\LocalBusinessDirectory.Data\LocalBusinessDirectory.Data.csproj" />
+    <Content Remove="Pages\_AuthLayout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LocalBusinessDirectory.Data\LocalBusinessDirectory.Data.csproj" />
+    <ProjectReference Include="..\LocalBusinessDirectory.Validation\LocalBusinessDirectory.Validation.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\_AuthLayout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\_AuthLayout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Shared\_AuthLayout.cshtml" />
   </ItemGroup>
 
 </Project>

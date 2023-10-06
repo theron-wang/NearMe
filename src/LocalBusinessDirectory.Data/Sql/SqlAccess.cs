@@ -15,7 +15,7 @@ public class SqlAccess : ISqlAccess
 
     public async Task<List<T>> GetAsync<T>(string storedProcedure, object parameters)
     {
-        using var connection = new SqlConnection(_config.GetConnectionString("default"));
+        using var connection = new SqlConnection(_config.GetConnectionString("Default"));
 
         var result = await connection.QueryAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
         return result.ToList();
@@ -23,15 +23,15 @@ public class SqlAccess : ISqlAccess
 
     public async Task<List<T>> GetAsync<T, TFirst, TSecond>(string storedProcedure, object parameters, Func<TFirst, TSecond, T> map)
     {
-        using var connection = new SqlConnection(_config.GetConnectionString("default"));
+        using var connection = new SqlConnection(_config.GetConnectionString("Default"));
 
         var result = await connection.QueryAsync(storedProcedure, map, parameters, commandType: CommandType.StoredProcedure);
         return result.ToList();
     }
 
-    public async Task<T> GetFirstOrDefaultAsync<T>(string storedProcedure, object parameters)
+    public async Task<T?> GetFirstOrDefaultAsync<T>(string storedProcedure, object parameters)
     {
-        using var connection = new SqlConnection(_config.GetConnectionString("default"));
+        using var connection = new SqlConnection(_config.GetConnectionString("Default"));
 
         return await connection.QueryFirstOrDefaultAsync<T>(storedProcedure, parameters, commandType: CommandType.StoredProcedure);
     }
