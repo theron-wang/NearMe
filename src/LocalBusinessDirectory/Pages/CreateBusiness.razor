@@ -1,0 +1,33 @@
+﻿@page "/create-business"
+@using LocalBusinessDirectory.Helpers;
+@using Microsoft.AspNetCore.Identity;
+
+@inject IDataPersist dataPersist
+@inject IUserStore<User> userStore
+@inject NavigationManager nav
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState!;
+
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            user = await userStore.FindByNameAsync(state.User.Identity!.Name!, default);
+        }
+        else
+        {
+            user = dataPersist.Pop<User>("BusinessUser");
+        }
+
+        if (user is null || user.BusinessId != null)
+        {
+            nav.NavigateTo("/");
+        }
+    }
+}

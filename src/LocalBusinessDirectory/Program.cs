@@ -1,3 +1,4 @@
+using LocalBusinessDirectory.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 
@@ -13,6 +14,8 @@ builder.Services.AddSingleton<IOfferData, OfferData>();
 builder.Services.AddSingleton<IRater, Rater>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IUserStore<User>, UserData>();
+
+builder.Services.AddScoped<IDataPersist, DataPersist>();
 
 builder.Services.AddAuthentication()
     .AddCookie(options =>

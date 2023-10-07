@@ -3,6 +3,7 @@
     @Name NVARCHAR(MAX),
     @Email NVARCHAR(MAX),
     @PasswordHash CHAR(60),
+    @PricingPlan INT,
     @BusinessId VARCHAR(36)
 AS
 BEGIN
@@ -11,6 +12,7 @@ BEGIN
         [Name] = @Name,
         [Email] = @Email,
         [PasswordHash] = @PasswordHash,
+        [PricingPlan] = @PricingPlan,
         [BusinessId] = @BusinessId
     WHERE
         [Id] = @Id;

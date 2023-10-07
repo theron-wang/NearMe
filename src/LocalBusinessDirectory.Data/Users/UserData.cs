@@ -3,7 +3,7 @@ using LocalBusinessDirectory.Data.Sql;
 using Microsoft.AspNetCore.Identity;
 
 namespace LocalBusinessDirectory.Data.Users;
-public class UserData : IUserStore<User>, IUserRoleStore<User>
+public class UserData : IUserStore<User>
 {
     private readonly ISqlAccess _sql;
 
@@ -12,14 +12,9 @@ public class UserData : IUserStore<User>, IUserRoleStore<User>
         _sql = sql;
     }
 
-    public async Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-    {
-        await _sql.ExecuteAsync("spUsers_AddToRole", new { user.Id, RoleName = roleName });
-    }
-
     public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
     {
-        await _sql.ExecuteAsync("spUsers_Create", new { user.Name, user.BusinessId, user.Email, user.PasswordHash });
+        user.Id = await _sql.GetFirstOrDefaultAsync<int>("spUsers_Create", new { user.Name, user.BusinessId, user.Email, user.PasswordHash, user.PricingPlan });
         return IdentityResult.Success;
     }
 
@@ -61,22 +56,6 @@ public class UserData : IUserStore<User>, IUserRoleStore<User>
     public Task<string?> GetUserNameAsync(User user, CancellationToken cancellationToken)
     {
         return Task.FromResult<string?>(user.Name);
-    }
-
-    public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
-    {
-        return await _sql.GetAsync<User>("spUsers_GetUsersInRole", new { RoleName = roleName });
-    }
-
-    public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-    {
-        var roles = await GetRolesAsync(user, cancellationToken);
-        return roles != null && roles.Contains(roleName);
-    }
-
-    public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
-    {
-        await _sql.ExecuteAsync("spUsers_RemoveFromRole", new { UserId = user.Id, RoleName = roleName });
     }
 
     public Task SetNormalizedUserNameAsync(User user, string? normalizedName, CancellationToken cancellationToken)

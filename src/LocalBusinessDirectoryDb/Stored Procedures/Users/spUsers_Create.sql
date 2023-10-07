@@ -2,9 +2,12 @@
     @Name NVARCHAR(MAX),
     @Email NVARCHAR(MAX),
     @PasswordHash CHAR(60),
+    @PricingPlan INT,
     @BusinessId VARCHAR(36)
 AS
 BEGIN
-    INSERT INTO [dbo].[Users] ([Name], [Email], [PasswordHash], [BusinessId])
-    VALUES (@Name, @Email, @PasswordHash, @BusinessId);
+    INSERT INTO [dbo].[Users] ([Name], [Email], [PasswordHash], [PricingPlan], [BusinessId])
+    VALUES (@Name, @Email, @PasswordHash, @PricingPlan, @BusinessId);
+
+    return SCOPE_IDENTITY();
 END;

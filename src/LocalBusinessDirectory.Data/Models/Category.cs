@@ -1,5 +1,8 @@
 ﻿namespace LocalBusinessDirectory.Data.Models;
+
+#nullable disable
 public class Category
 {
-    public string Name { get; set; } = string.Empty;
+    public int Id { get; set; }
+    public string Name { get; set; }
 }

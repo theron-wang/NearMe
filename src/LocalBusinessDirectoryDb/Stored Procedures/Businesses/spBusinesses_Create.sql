@@ -3,7 +3,7 @@
 	@Name NVARCHAR(MAX),
 	@Description NVARCHAR(MAX),
 	@ImageUrl VARCHAR(MAX),
-	@CategoryId int,
+	@CategoryName VARCHAR(MAX),
 	@IsPartnered bit,
 	@AddressNumber int,
     @AddressStreet VARCHAR(MAX),
@@ -12,6 +12,8 @@
     @AddressState VARCHAR(MAX),
     @AddressZipCode VARCHAR(MAX)
 AS
+	declare @CategoryId int = (select Id from [dbo].[Categories] where Name=@CategoryName);
+
 	INSERT INTO [dbo].[Businesses]
 	([Id], [Name], [Description], [ImageUrl], [CategoryId], [IsPartnered], [AddressNumber], [AddressStreet], [AddressSuite], [AddressCity], [AddressState], [AddressZipCode])
 	VALUES

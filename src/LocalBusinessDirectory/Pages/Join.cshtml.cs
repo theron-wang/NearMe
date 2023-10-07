@@ -1,6 +1,8 @@
+using LocalBusinessDirectory.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace LocalBusinessDirectory.Pages;
 
@@ -24,7 +26,6 @@ public class JoinModel : PageModel
     public void OnGet()
     {
     }
-
     public async Task<IActionResult> OnPostAsync()
     {
         if (ModelState.IsValid == false)
@@ -48,7 +49,11 @@ public class JoinModel : PageModel
             return Page();
         }
 
-        await _signInManager.SignInAsync(user, LoginModel.RememberMe);
+        await _signInManager.SignInWithClaimsAsync(user, LoginModel.RememberMe, new List<Claim>()
+        {
+            new(DirectoryClaimTypes.BusinessOwnerOf, user.BusinessId ?? ""),
+            new Claim(DirectoryClaimTypes.Plan, ((int)user.PricingPlan).ToString())
+        });
 
         return LocalRedirect("~/");
     }

@@ -61,6 +61,7 @@
     <Folder Include="Stored Procedures\Ratings" />
     <Folder Include="Stored Procedures\Offers" />
     <Folder Include="Stored Procedures\Users" />
+    <Folder Include="Stored Procedures\Categories" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Businesses.sql" />
@@ -83,12 +84,7 @@
     <Build Include="Stored Procedures\Users\spUsers_FindById.sql" />
     <Build Include="Stored Procedures\Users\spUsers_FindByName.sql" />
     <Build Include="Stored Procedures\Users\spUsers_Update.sql" />
-    <Build Include="Roles.sql" />
-    <Build Include="Stored Procedures\Users\spUsers_AddToRole.sql" />
-    <Build Include="Stored Procedures\Users\spUsers_GetRoles.sql" />
-    <Build Include="UserRoles.sql" />
-    <Build Include="Stored Procedures\Users\spUsers_GetUsersInRole.sql" />
-    <Build Include="Stored Procedures\Users\spUsers_RemoveFromRole.sql" />
+    <Build Include="Stored Procedures\Categories\spCategories_GetAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalBusinessDirectoryDb.publish.xml" />
