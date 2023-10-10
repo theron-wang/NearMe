@@ -2,16 +2,23 @@
 
 @if (Business is not null)
 {
-    <div class="bg-green-500/20 shadow rounded p-8 cursor-pointer flex transition hover:bg-green-500/30" @onclick="@(() => nav.NavigateTo($"/business/{Business.Id}"))">
+    <div class="bg-green-50 shadow rounded p-8 cursor-pointer flex transition hover:bg-green-100" @onclick="@(() => nav.NavigateTo($"/business/{Business.Id}"))">
         <div class="h-48 max-h-48 w-1/4 min-w-1/4 overflow-hidden">
             <img src="images/@Business.ImageUrl" class="rounded h-full object-cover" />
         </div>
-        <div class="max-h-48 overflow-hidden px-8">
+        <div class="max-h-48 overflow-hidden px-8 flex-1">
             <div class="font-bold mb-3">@Business.Name</div>
             <div class="mb-3">@Business.Address.Format()</div>
             <div class="mb-4 flex items-center">
-                <StarDisplay Stars="@Business.Rating" UseSvgs="true" />
-                <span class="ml-2">(@Business.NumberOfRatings)</span>
+                @if (Business.NumberOfRatings > 0)
+                {
+                    <StarDisplay Stars="@Business.Rating" UseSvgs="true" />
+                    <span class="ml-2">(@Business.NumberOfRatings)</span>
+                }
+                else
+                {
+                    <span class="italic text-black/75 text-sm">No ratings</span>
+                }
             </div>
             <div class="text-sm text-black/80">@Business.Description</div>
         </div>

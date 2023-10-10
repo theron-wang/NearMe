@@ -1,19 +1,147 @@
 ﻿@page "/create-business"
 @using LocalBusinessDirectory.Helpers;
 @using Microsoft.AspNetCore.Identity;
+@using MimeTypes;
 
 @inject IDataPersist dataPersist
 @inject IUserStore<User> userStore
 @inject NavigationManager nav
+@inject ICategoryData categoryData
+@inject IBusinessData businessData
+@inject IWebHostEnvironment env
+@inject IConfiguration config
+@inject IJSRuntime js
+
+<h1 class="text-3xl mb-8">Register your business</h1>
+<EditForm EditContext="editContext" OnValidSubmit="CreateNewBusiness">
+    <DataAnnotationsValidator />
+
+    <div class="mb-12">
+        <h2 class="text-xl mb-8">Business information</h2>
+        <div class="mb-8">
+            <label for="name">
+                Business name <span class="text-xs text-red-900">*</span>
+            </label>
+            <InputText @bind-Value="businessModel.Name" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Your business name" id="name" />
+            <ValidationMessage For="() => businessModel.Name" class="text-red-600 text-sm" />
+        </div>
+        <div class="mb-8">
+            <label for="desc">
+                Description <span class="text-xs text-red-900">*</span>
+            </label>
+            <InputTextArea @bind-Value="businessModel.Description" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Description of your business" id="desc" />
+            <ValidationMessage For="() => businessModel.Description" class="text-red-600 text-sm" />
+        </div>
+        <div class="mb-8">
+            <label for="image">
+                Cover image <span class="text-xs text-red-900">*</span>
+            </label>
+            <InputFile OnChange="UploadPhoto" class="file:mr-4 file:border-0 file:p-3 file:rounded-full file:bg-green-300 file:text-xs file:text-green-900 file:font-bold file:transition file:hover:bg-green-400 file:cursor-pointer w-full transition my-2 cursor-pointer text-sm" @ref="inputFile" accept="image/png, image/jpeg, image/gif" id="image" />
+            <ValidationMessage For="() => businessModel.Image" class="text-red-600 text-sm" />
+
+            <img @ref="previewImageElem" class="max-w-56 max-h-56 object-cover" />
+        </div>
+        <div>
+            <label for="category">
+                Business category <span class="text-xs text-red-900">*</span>
+            </label>
+            <InputSelect @bind-Value="businessModel.CategoryId" class="bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" id="category">
+                <option value="" hidden>Select category...</option>
+                @if (categories is not null)
+                {
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="() => businessModel.CategoryId" class="text-red-600 text-sm" />
+        </div>
+    </div>
+    <div class="mb-12">
+        <h2 class="text-xl mb-8">Address</h2>
+
+        <div class="flex mb-8">
+            <div class="w-24 mr-4">
+                <label for="street-num">
+                    Number <span class="text-xs text-red-900">*</span>
+                </label>
+                <InputText @bind-Value="businessModel.AddressNumber" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="street-num" />
+                <ValidationMessage For="() => businessModel.Name" class="text-red-600 text-sm" />
+            </div>
+            <div class="flex-1 min-w-60 mr-4">
+                <label for="street">
+                    Street <span class="text-xs text-red-900">*</span>
+                </label>
+                <InputText @bind-Value="businessModel.AddressStreet" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="street" />
+                <ValidationMessage For="() => businessModel.AddressStreet" class="text-red-600 text-sm" />
+            </div>
+            <div class="flex-1 max-w-32">
+                <label for="suite">
+                    Apt, suite, etc.
+                </label>
+                <InputText @bind-Value="businessModel.AddressSuite" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="suite" />
+                <ValidationMessage For="() => businessModel.AddressSuite" class="text-red-600 text-sm" />
+            </div>
+        </div>
+        <div class="flex mb-8">
+            <div class="w-60 mr-4">
+                <label for="city">
+                    City <span class="text-xs text-red-900">*</span>
+                </label>
+                <InputText @bind-Value="businessModel.AddressCity" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="city" />
+                <ValidationMessage For="() => businessModel.AddressCity" class="text-red-600 text-sm" />
+            </div>
+            <div class="w-40">
+                <label for="state">
+                    State <span class="text-xs text-red-900">*</span>
+                </label>
+
+                <InputSelect @bind-Value="businessModel.AddressState" class="bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="state">
+                    <option value="" hidden>Select state...</option>
+                    @if (states is not null)
+                    {
+                        @foreach (var state in states)
+                        {
+                            <option value="@state.Key">@state.Value</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => businessModel.AddressState" class="text-red-600 text-sm" />
+            </div>
+        </div>
+        <div>
+            <div class="w-40">
+                <label for="zip-code">
+                    Zip code <span class="text-xs text-red-900">*</span>
+                </label>
+
+                <InputText @bind-Value="businessModel.AddressZipCode" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg p-3 pl-4 my-2 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" id="zip-code" />
+                <ValidationMessage For="() => businessModel.AddressZipCode" class="text-red-600 text-sm" />
+            </div>
+        </div>
+    </div>
+
+    <button type="submit" class="bg-green-600 w-full text-white rounded-full py-3 text-center transition hover:bg-green-700">Create business</button>
+</EditForm>
 
 @code {
     [CascadingParameter]
     public Task<AuthenticationState>? AuthState { get; set; }
 
     private User? user;
+    private NewBusinessModel businessModel = new();
+    private EditContext? editContext;
+
+    private List<Category>? categories;
+    private Dictionary<string, string>? states;
+
+    private InputFile? inputFile;
+    private ElementReference previewImageElem;
 
     protected override async Task OnInitializedAsync()
     {
+        editContext = new(businessModel);
         var state = await AuthState!;
 
         if (state.User.Identity?.IsAuthenticated == true)
@@ -28,6 +156,66 @@
         if (user is null || user.BusinessId != null)
         {
             nav.NavigateTo("/");
+            return;
         }
+
+        categories = await categoryData.GetCategories();
+        states = config.GetSection("UsStates").Get<Dictionary<string, string>>();
+    }
+
+    private async Task UploadPhoto(InputFileChangeEventArgs e)
+    {
+        businessModel.Image = e.File;
+        try
+        {
+            if (e.File.ContentType == MimeTypeMap.GetMimeType(".jpg") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".png") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".gif") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".webp"))
+            {
+                await js.InvokeVoidAsync("previewImage", inputFile?.Element, previewImageElem);
+            }
+        }
+        catch
+        {
+        }
+
+        var field = editContext!.Field(nameof(businessModel.Image));
+        editContext?.NotifyFieldChanged(in field);
+    }
+
+    private async Task CreateNewBusiness()
+    {
+        var business = new Business()
+        {
+            Address = new Address()
+            {
+                AddressCity = businessModel.AddressCity!,
+                AddressNumber = businessModel.AddressNumber!,
+                AddressState = businessModel.AddressState!,
+                AddressStreet = businessModel.AddressStreet!,
+                AddressSuite = businessModel.AddressSuite,
+                AddressZipCode = businessModel.AddressZipCode!
+            },
+            CategoryName = categories!.First(c => c.Id == businessModel.CategoryId!).Name,
+            Description = businessModel.Description,
+            Name = businessModel.Name
+        };
+
+        var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(businessModel.Image!.Name);
+
+        using (var stream = businessModel.Image.OpenReadStream(10 * 1024 * 1024))
+        {
+            using var fs = File.OpenWrite(Path.Combine(env.ContentRootPath, "images", fileName));
+            await stream.CopyToAsync(fs);
+        }
+
+        business.ImageUrl = fileName;
+        user!.BusinessId = business.Id;
+
+        await businessData.CreateBusiness(business);
+        await userStore.UpdateAsync(user, default);
+
+        nav.NavigateTo("/join");
     }
 }

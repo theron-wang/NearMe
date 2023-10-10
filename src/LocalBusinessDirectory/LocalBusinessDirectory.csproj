@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="images\" />
+    <Folder Include="Pages\Business\" />
   </ItemGroup>
 
   <ItemGroup>

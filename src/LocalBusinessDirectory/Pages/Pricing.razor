@@ -1,17 +1,21 @@
 ﻿@page "/pricing"
+@using Microsoft.AspNetCore.Identity;
+
+@inject IUserStore<User> userStore
+@inject NavigationManager nav
 
 <div class="text-center flex flex-col items-center mb-8">
     <h1 class="text-3xl mb-4">Pricing Plans</h1>
 
     <div class="text-center max-w-md">
-        Pick a plan that is right for you. You can change your plan at any time!
+        Pick a plan that is right for you. You can change your subscription at any time!
     </div>
 </div>
 
 <div class="grid grid-cols-3 gap-x-8 px-12">
     <div class="flex flex-col p-4 scale-95">
         <div class="font-bold text-xl text-center mb-4">
-            Free
+            Basic
         </div>
         <div class="text-4xl text-center mb-8">
             $0<span class="text-xl">/mo</span>
@@ -26,7 +30,21 @@
             <div class="flex items-center">
                 <i class="fa-solid fa-check me-4"></i> Register 1 business
             </div>
-            <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+            <AuthorizeView>
+                <Authorized>
+                    @if (user?.PricingPlan == PricingPlan.None)
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white py-2 mt-auto" disabled>Subscribed</button>
+                    }
+                    else
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" @onclick="() => ChangePlan(PricingPlan.None)">Subscribe</button>
+                    }
+                </Authorized>
+                <NotAuthorized>
+                    <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
     <div class="bg-green-100 p-4 flex flex-col">
@@ -49,7 +67,21 @@
             <div class="flex items-center">
                 <i class="fa-solid fa-check me-4"></i> Access to discounts up to 15% off (participating businesses only)
             </div>
-            <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+            <AuthorizeView>
+                <Authorized>
+                    @if (user?.PricingPlan == PricingPlan.Pro)
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white py-2 mt-auto" disabled>Subscribed</button>
+                    }
+                    else
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" @onclick="() => ChangePlan(PricingPlan.Pro)">Subscribe</button>
+                    }
+                </Authorized>
+                <NotAuthorized>
+                    <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
     <div class="p-4 flex flex-col scale-95">
@@ -78,7 +110,47 @@
             <div class="flex items-center mb-8">
                 <i class="fa-solid fa-check me-4"></i> Increased customer base through discounts
             </div>
-            <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+            <AuthorizeView>
+                <Authorized>
+                    @if (user?.PricingPlan == PricingPlan.Member)
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white py-2 mt-auto" disabled>Subscribed</button>
+                    }
+                    else
+                    {
+                        <button class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" @onclick="() => ChangePlan(PricingPlan.Member)">Subscribe</button>
+                    }
+                </Authorized>
+                <NotAuthorized>
+                    <a class="text-center rounded transition bg-green-500 hover:bg-green-600 text-white py-2 mt-auto" href="join">Join today</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
 </div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    private User? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState!;
+
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            user = await userStore.FindByNameAsync(state.User.Identity.Name!, default);
+        }
+    }
+
+    private async Task ChangePlan(PricingPlan plan)
+    {
+        user!.PricingPlan = plan;
+
+        await userStore.UpdateAsync(user!, default);
+
+        nav.NavigateTo("/refresh", true);
+    }
+}

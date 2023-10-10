@@ -13,7 +13,7 @@ public class BusinessData : IBusinessData
 
     public async Task CreateBusiness(Business business)
     {
-        await _sql.ExecuteAsync("spBusinesses_Create", business);
+        await _sql.ExecuteAsync("spBusinesses_Create", new BusinessDbInput(business));
     }
 
     public async Task<List<Business>> GetBusinesses()
@@ -22,7 +22,7 @@ public class BusinessData : IBusinessData
         {
             b.Address = a;
             return b;
-        });
+        }, "AddressNumber");
     }
 
     public async Task<Business?> GetBusinessById(string id)
@@ -31,11 +31,11 @@ public class BusinessData : IBusinessData
         {
             b.Address = a;
             return b;
-        })).FirstOrDefault();
+        }, "AddressNumber")).FirstOrDefault();
     }
 
     public async Task UpdateBusiness(Business business)
     {
-        await _sql.ExecuteAsync("spBusinesses_Update", business);
+        await _sql.ExecuteAsync("spBusinesses_Update", new BusinessDbInput(business));
     }
 }

@@ -4,8 +4,7 @@
 	@Description NVARCHAR(MAX),
 	@ImageUrl VARCHAR(MAX),
 	@CategoryName VARCHAR(MAX),
-	@IsPartnered bit,
-	@AddressNumber int,
+	@AddressNumber VARCHAR(MAX),
     @AddressStreet VARCHAR(MAX),
     @AddressSuite VARCHAR(MAX),
     @AddressCity VARCHAR(MAX),
@@ -15,7 +14,7 @@ AS
 	declare @CategoryId int = (select Id from [dbo].[Categories] where Name=@CategoryName);
 
 	INSERT INTO [dbo].[Businesses]
-	([Id], [Name], [Description], [ImageUrl], [CategoryId], [IsPartnered], [AddressNumber], [AddressStreet], [AddressSuite], [AddressCity], [AddressState], [AddressZipCode])
+	([Id], [Name], [Description], [ImageUrl], [CategoryId], [AddressNumber], [AddressStreet], [AddressSuite], [AddressCity], [AddressState], [AddressZipCode])
 	VALUES
-	(@Id, @Name, @Description, @ImageUrl, @CategoryId, @IsPartnered, @AddressNumber, @AddressStreet, @AddressSuite, @AddressCity, @AddressState, @AddressZipCode);
+	(@Id, @Name, @Description, @ImageUrl, @CategoryId, @AddressNumber, @AddressStreet, @AddressSuite, @AddressCity, @AddressState, @AddressZipCode);
 RETURN 0

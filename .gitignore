@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 # Ignore node modules
 node_modules/
+
+images/

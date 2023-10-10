@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 module.exports = {
     content: [
         "./Pages/**/*.{razor,cshtml}",
@@ -12,7 +15,11 @@ module.exports = {
               'display': ['Josefin Sans', 'Helvetica', 'Arial', 'sans-serif']
           },
           minWidth: {
-              '1/4': "25%"
+              '1/4': "25%",
+              ...defaultTheme.spacing
+          },
+          maxWidth: {
+              ...defaultTheme.spacing
           }
         },
   },

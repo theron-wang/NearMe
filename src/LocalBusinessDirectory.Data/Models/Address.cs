@@ -2,7 +2,7 @@
 
 public class Address
 {
-    public int AddressNumber { get; set; }
+    public string AddressNumber { get; set; } = string.Empty;
     public string AddressStreet { get; set; } = string.Empty;
     public string? AddressSuite { get; set; }
     public string AddressCity { get; set; } = string.Empty;

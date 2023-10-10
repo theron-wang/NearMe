@@ -1,4 +1,5 @@
 using LocalBusinessDirectory.Helpers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddControllers();
 builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IBusinessData, BusinessData>();
 builder.Services.AddSingleton<ICategoryData, CategoryData>();
@@ -17,15 +19,20 @@ builder.Services.AddSingleton<IUserStore<User>, UserData>();
 
 builder.Services.AddScoped<IDataPersist, DataPersist>();
 
+builder.Services.AddOptions();
 builder.Services.AddAuthentication()
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/login";
-        options.LogoutPath = "/logout";
-        options.SlidingExpiration = true;
-    });
-
+    .AddApplicationCookie();
 builder.Services.AddAuthorization();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/join";
+    options.LogoutPath = "/sign-out";
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(3);
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
 
 builder.Services.AddIdentityCore<User>()
     .AddUserStore<UserData>()
@@ -51,10 +58,11 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRouting();
 
+app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

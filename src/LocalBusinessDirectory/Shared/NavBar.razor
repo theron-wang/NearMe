@@ -1,4 +1,5 @@
-﻿@inject NavigationManager nav
+﻿@using LocalBusinessDirectory.Helpers;
+@inject NavigationManager nav
 
 <header class="flex items-center justify-between gap-x-8 border-b py-4 px-20">
     <a href="/" class="flex items-center gap-x-2 select-none text-lg font-bold">
@@ -11,7 +12,7 @@
                 Catalog <i class="fa-solid fa-caret-down ml-1"></i>
             </div>
             <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                <div class="flex flex-col whitespace-nowrap bg-white">
+                <div class="flex flex-col whitespace-nowrap bg-white normal-case">
                     <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=restaurant">
                         <div class="inline-block w-4 mr-2">
                             <i class="fa-solid fa-utensils"></i>
@@ -42,8 +43,47 @@
         <a href="pricing">
             Pricing
         </a>
-        <a href="join" class="py-2 px-4 bg-green-800 transition text-white rounded shadow-md shadow-green-900/50 text-xs font-normal hover:bg-green-900">
-            Join
-        </a>
+        <AuthorizeView Context="user">
+            <Authorized>
+                <div class="group relative">
+                    <div class="cursor-pointer select-none font-bold normal-case" tabindex="-1">
+                        @user.User.Identity?.Name
+                        <span class="mx-1">
+                            <PricingPlanBadge PricingPlan="(PricingPlan)int.Parse(user.User.FindFirst(DirectoryClaimTypes.Plan)!.Value)" />
+                        </span>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </div>
+                    <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                        <div class="opacity-0 absolute top-2 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                            <div class="flex flex-col whitespace-nowrap bg-white normal-case">
+                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="business">
+                                    <div class="inline-block w-4 mr-2">
+                                        <i class="fa-solid fa-briefcase"></i>
+                                    </div>
+                                    Manage your business
+                                </a>
+                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="pricing">
+                                    <div class="inline-block w-4 mr-2">
+                                        <i class="fa-solid fa-money-bill"></i>
+                                    </div>
+                                    Change pricing plan
+                                </a>
+                                <a class="px-4 py-2 transition duration-200 text-red-900 hover:bg-gray-300" href="sign-out">
+                                    <div class="inline-block w-4 mr-2">
+                                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                    </div>
+                                    Sign out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <a href="join" class="py-2 px-4 bg-green-800 transition text-white rounded shadow-md shadow-green-900/50 text-xs font-normal hover:bg-green-900">
+                    Join
+                </a>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </header>

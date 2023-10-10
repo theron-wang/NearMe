@@ -1,4 +1,6 @@
 using LocalBusinessDirectory.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -52,9 +54,8 @@ public class JoinModel : PageModel
         await _signInManager.SignInWithClaimsAsync(user, LoginModel.RememberMe, new List<Claim>()
         {
             new(DirectoryClaimTypes.BusinessOwnerOf, user.BusinessId ?? ""),
-            new Claim(DirectoryClaimTypes.Plan, ((int)user.PricingPlan).ToString())
+            new(DirectoryClaimTypes.Plan, ((int)user.PricingPlan).ToString())
         });
-
         return LocalRedirect("~/");
     }
 }

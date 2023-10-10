@@ -7,14 +7,24 @@ AS
             COUNT(*) as NumberOfRatings
         from [dbo].[Ratings] as r
         group by r.RelatedTo
+    ), 
+    PricingPlansAggregated as (
+        select 
+            u.BusinessId,
+            CAST(CASE WHEN u.PricingPlan = 2 THEN 1 ELSE 0 END AS BIT) as IsPartnered
+        from [dbo].[Users] as u
+        where u.BusinessId is not null
+        group by u.BusinessId, u.PricingPlan
     )
 
     select
-        b.*,
-        c.Name as CategoryName,
+        u.IsPartnered,
         r.Rating,
-        r.NumberOfRatings
+        r.NumberOfRatings,
+        c.Name as CategoryName,
+        b.*
     from [dbo].[Businesses] as b
     inner join [dbo].[Categories] as c on c.Id = b.CategoryId
-    inner join RatingsAggregated as r on r.RelatedTo = b.Id;
+    left join PricingPlansAggregated as u on u.BusinessId=b.Id
+    left join RatingsAggregated as r on r.RelatedTo = b.Id;
 RETURN 0

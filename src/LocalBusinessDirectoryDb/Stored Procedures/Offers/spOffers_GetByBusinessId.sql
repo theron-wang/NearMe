@@ -13,6 +13,6 @@ BEGIN
 
     select o.*, r.Rating, r.NumberOfRatings
     from [dbo].[Offers] as o
-	inner join RatingsAggregated as r on r.RelatedTo=o.Id
+	left join RatingsAggregated as r on r.RelatedTo=o.Id
     where o.BusinessId = @BusinessId;
 END;

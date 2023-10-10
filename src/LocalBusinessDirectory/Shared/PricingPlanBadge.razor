@@ -1,0 +1,17 @@
+﻿@switch (PricingPlan)
+{
+    case PricingPlan.None:
+        <span class="p-1 text-blue-900 font-bold text-xs bg-blue-200 rounded">BASIC</span>
+        break;
+    case PricingPlan.Pro:
+        <span class="p-1 text-purple-900 font-bold text-xs bg-purple-200 rounded">PRO</span>
+        break;
+    case PricingPlan.Member:
+        <span class="p-1 text-green-900 font-bold text-xs bg-green-200 rounded"><i class="fa-solid fa-star mr-1"></i>MEMBER</span>
+        break;
+}
+
+@code {
+    [Parameter]
+    public PricingPlan PricingPlan { get; set; }
+}
