@@ -1,0 +1,298 @@
+﻿@page "/business/{Id}"
+@using LocalBusinessDirectory.Helpers;
+@using Microsoft.AspNetCore.Components.Authorization;
+
+@layout NoPaddingLayout
+
+@inject IBusinessData businessData
+@inject NavigationManager nav
+@inject IRater rater
+@inject IOfferData offerData
+
+@if (business is not null)
+{
+    <div class="relative w-full h-[25vw]">
+        <div class="absolute left-0 top-0 w-full z-[-1] brightness-50 bg-[center_top] bg-black/50">
+            <img src="/images/@business.ImageUrl" class="w-full h-[25vw] object-cover" @ref="bgImage" />
+        </div>
+        <div class="px-12 h-full flex flex-col @(isEditing ? "overflow-y-auto pt-8" : "py-8")">
+            <a href="/catalog" class="text-blue-400 w-fit"><i class="fa-solid fa-chevron-left"></i> Catalog</a>
+            <div class="flex justify-between flex-1 mt-4">
+                @if (isEditing)
+                {
+                    <EditBusiness Business="business" PreviewImageElement="bgImage" Callback="EditingDone" />
+                }
+                else
+                {
+                    <div class="flex flex-col">
+                        <div class="text-3xl text-white mb-8">
+                            <h1 class="flex items-center">
+                                @business.Name
+                                @if (business.IsPartnered)
+                                {
+                                    <span class="group relative flex ml-2">
+                                        <span class="p-1 cursor-pointer text-green-800 hover:text-green-900 transition font-bold text-sm bg-green-200 rounded"><i class="fa-solid fa-star mr-1"></i>MEMBER</span>
+                                        <span class="opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 transition duration-100 ease-in-out pointer-events-none text-white text-center flex flex-col items-center group-hover:opacity-100 group-hover:pointer-events-auto">
+                                            <span class="bg-neutral-900 text-xs rounded whitespace-nowrap p-1">
+                                                [Our Brand] Member
+                                            </span>
+                                            <span class="w-0 h-0 border-4 border-b-0 border-x-transparent border-t-neutral-900"></span>
+                                        </span>
+                                    </span>
+                                }
+                            </h1>
+                        </div>
+                        <div class="text-sm text-white/70 max-w-sm">
+                            @business.Description
+                        </div>
+                        <div class="text-sm text-white/70 mt-auto">
+                            @business.CategoryName
+                        </div>
+                        <div class="text-sm text-white/70 mt-4">
+                            <i class="fa-solid fa-location-dot mr-2"></i>@business.Address.Format()
+                        </div>
+                    </div>
+                }
+                <div class="flex flex-col items-end">
+                    <div>
+                        @if (canEdit && isEditing == false)
+                        {
+                            <button class="bg-gray-200 text-black/80 rounded-lg p-1 px-3 text-center transition hover:bg-gray-300" @onclick="ToggleIsEditing"><i class="fa-solid fa-pen-to-square mr-2"></i> Edit</button>
+                        }
+                    </div>
+                    <div class="mt-auto flex items-center @(isEditing ? "pb-8" : "")">
+                        @if (isRating && isSignedIn)
+                        {
+                            <StarRater Stars="(userRating is null ? 5 : userRating.Value)" RelatedTo="@Id" Callback="RatingDone" />
+                            <button class="bg-red-600 text-white text-sm rounded-full p-1 px-3 text-center transition hover:bg-red-700 ml-2" @onclick="ToggleIsRating">Cancel</button>
+                        }
+                        else
+                        {
+                            @if (business.NumberOfRatings > 0)
+                            {
+                                <StarDisplay Stars="@business.Rating" />
+                            }
+                            else
+                            {
+                                <span class="text-white/70 text-sm">No ratings</span>
+                            }
+
+                            @if (isSignedIn)
+                            {
+                                <button class="bg-green-600 text-white text-sm rounded-full p-1 px-3 text-center transition hover:bg-green-700 ml-2" @onclick="ToggleIsRating">Rate</button>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="px-12 py-8">
+    <div class="mb-4 flex items-center justify-between">
+        <h2 class="text-3xl">Products and Services</h2>
+        @if (canEdit)
+        {
+            <button class="text-lg" title="New product/service" @onclick="OpenModal"><i class="fa-solid fa-circle-plus"></i></button>
+        }
+    </div>
+    <div class="flex items-center pb-4 border-b mb-8">
+        <div class="relative block mt-2 text-sm mr-4">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input @bind="name" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Name" aria-label="Search by name" />
+        </div>
+        <div class="relative block mt-2 text-sm">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </span>
+            <input type="number" step="1" min="0" @bind="minPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Minimum price" aria-label="Search by min. price" />
+        </div>
+        <div class="mx-2">
+            &mdash;
+        </div>
+        <div class="relative block mt-2 text-sm mr-auto">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </span>
+            <input type="number" step="1" min="0" @bind="maxPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Maximum price" aria-label="Search by max. price" />
+        </div>
+        <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer group relative" tabindex="0">
+            <div>
+                <i class="fa-solid fa-filter mr-2"></i>
+                Filter
+            </div>
+            <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-50 pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
+                <div class="font-bold uppercase mb-2 px-2">Rating</div>
+
+                @for (int i = 1; i <= 5; i++)
+                {
+                    var rating = i;
+                    <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300">
+                        <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
+                        <span class="mr-2">
+                            <StarDisplay Stars="i" SmallSpacing="true" />
+                        </span>
+                        @i.ToString("0.0")@(i != 5 ? "+" : "") stars
+                    </label>
+                }
+
+                <div class="font-bold uppercase my-2 px-2">Type</div>
+
+                @foreach (var offerType in Enum.GetValues<OfferType>())
+                {
+                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+                        <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(types.Contains(offerType))" @oninput="() => ToggleOfferType(offerType)" />
+                        @offerType.ToString()
+                    </label>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-3 gap-8 min-h-80">
+        @if (viewOffers is not null)
+        {
+            @foreach (var offer in viewOffers)
+            {
+                @offer.Name
+            }
+        }
+    </div>
+</div>
+@if (canEdit)
+{
+    <NewProductModal @ref="newProductModal" BusinessId="@Id" OnCreated="NewOfferCreated" />
+}
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    private bool canEdit;
+    private bool isSignedIn;
+    private Business? business;
+    private double? userRating;
+
+    private bool isRating;
+    private bool isEditing;
+
+    private List<Offer>? offers;
+    private List<Offer>? viewOffers;
+
+    private ElementReference bgImage;
+
+    private string? name;
+    private List<OfferType> types = new();
+    private int? searchRating;
+    private decimal? minPrice;
+    private decimal? maxPrice;
+
+    private NewProductModal? newProductModal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState!;
+
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            canEdit = state.User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value.Equals(Id, StringComparison.InvariantCultureIgnoreCase) == true;
+            isSignedIn = true;
+        }
+
+        business = await businessData.GetBusinessById(Id!);
+
+        if (business is null)
+        {
+            nav.NavigateTo("/catalog");
+            return;
+        }
+
+        userRating = await rater.GetCurrentRating(state.User.Identity!.Name!, Id!);
+        offers = await offerData.GetByBusinessId(Id!);
+        viewOffers = offers;
+    }
+
+    private void ToggleIsRating()
+    {
+        isRating = !isRating;
+    }
+
+    private void RatingDone(int newRating)
+    {
+        business!.Rating *= business.NumberOfRatings;
+        business!.Rating -= userRating ?? 0;
+        business!.Rating += newRating;
+        business!.NumberOfRatings += userRating is null ? 1 : 0;
+
+        business!.Rating /= business!.NumberOfRatings;
+
+        isRating = false;
+        StateHasChanged();
+    }
+
+    private void ToggleIsEditing()
+    {
+        isEditing = !isEditing;
+    }
+
+    private void EditingDone()
+    {
+        isEditing = false;
+
+        StateHasChanged();
+    }
+
+    private void ToggleOfferType(OfferType type)
+    {
+        if (types.Contains(type))
+        {
+            types.Remove(type);
+        }
+        else
+        {
+            types.Add(type);
+        }
+
+        Filter();
+    }
+
+    private void Filter()
+    {
+        viewOffers = offers?.Where(o =>
+            (name is null || o.Name.Contains(name, StringComparison.InvariantCultureIgnoreCase)) &&
+            (searchRating is null || o.Rating >= searchRating) &&
+            (types.Count == 0 || types.Contains(o.Type)) &&
+            (minPrice is null || o.Price >= minPrice) &&
+            (maxPrice is null || o.Price <= maxPrice)
+        ).ToList();
+    }
+
+    private void SetSearchRating(int rating)
+    {
+        if (searchRating == rating)
+        {
+            searchRating = null;
+        }
+        else
+        {
+            searchRating = rating;
+        }
+        Filter();
+    }
+
+    private void OpenModal()
+    {
+        newProductModal?.Show();
+    }
+
+    private void NewOfferCreated(Offer offer)
+    {
+        offers?.Add(offer);
+        Filter();
+        StateHasChanged();
+    }
+}

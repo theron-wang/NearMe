@@ -1,0 +1,133 @@
+﻿@using MimeTypes;
+@inject IOfferData offerData
+@inject IJSRuntime js
+@inject IWebHostEnvironment env
+
+<Modal @ref="modal">
+    <h1 class="text-2xl mb-4">Create a new product/service</h1>
+
+    <EditForm EditContext="editContext" OnValidSubmit="CreateNew">
+        <div class="mb-4">
+            <label for="name">
+                Name
+            </label>
+            <InputText @bind-Value="model.Name" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Product/service name" id="name" />
+            <ValidationMessage For="() => model.Name" class="text-red-600 text-sm" />
+        </div>
+        <div class="mb-4">
+            <label for="desc">
+                Description
+            </label>
+            <InputTextArea @bind-Value="model.Description" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Description of your product/service" id="desc" />
+            <ValidationMessage For="() => model.Description" class="text-red-600 text-sm" />
+        </div>
+        <div class="mb-4">
+            <label for="price">
+                Price
+            </label>
+            <div class="relative block">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </span>
+                <InputNumber min="0" step="any" @bind-Value="model.Price" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full pl-10 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Product/service price" id="price" />
+            </div>
+            <ValidationMessage For="() => model.Price" class="text-red-600 text-sm" />
+        </div>
+        <div class="mb-4">
+            <label for="image">
+                Cover image
+            </label>
+            <InputFile OnChange="UploadPhoto" class="file:mr-4 file:border-0 file:p-3 file:rounded-full file:bg-green-300 file:text-xs file:text-green-900 file:font-bold file:transition file:hover:bg-green-400 file:cursor-pointer w-full transition my-2 cursor-pointer text-sm" @ref="inputFile" accept="image/png, image/jpeg, image/gif" id="image" />
+            <ValidationMessage For="() => model.Image" class="text-red-600 text-sm" />
+
+            <img @ref="previewImageElem" class="max-w-56 max-h-56 object-cover" />
+        </div>
+        <div class="mb-4">
+            <label for="category">
+                Type
+            </label>
+            <InputSelect @bind-Value="model.Type" class="bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" id="type">
+                @foreach (var offerType in Enum.GetValues<OfferType>())
+                {
+                    <option value="@offerType">@offerType.ToString()</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => model.Type" class="text-red-600 text-sm" />
+        </div>
+
+        <button type="submit" class="bg-green-600 w-full text-white rounded-full py-3 text-center transition hover:bg-green-700">Create</button>
+    </EditForm>
+</Modal>
+
+@code {
+    [Parameter]
+    public Action<Offer>? OnCreated { get; set; }
+
+    [Parameter]
+    public string? BusinessId { get; set; }
+
+    private Modal? modal;
+    private EditContext? editContext;
+    private NewOfferModel model = new();
+
+    private InputFile? inputFile;
+    private ElementReference previewImageElem;
+
+    public void Show() => modal?.Show();
+
+    protected override void OnInitialized()
+    {
+        editContext = new(model);
+    }
+
+    private async Task CreateNew()
+    {
+        var offer = new Offer()
+        {
+            BusinessId = BusinessId,
+            Description = model.Description,
+            Name = model.Name,
+            Price = Convert.ToDecimal(model.Price),
+            Type = model.Type,
+        };
+
+        var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(model.Image!.Name);
+
+        using (var stream = model.Image.OpenReadStream(3 * 1024 * 1024))
+        {
+            using var fs = File.OpenWrite(Path.Combine(env.ContentRootPath, "images", fileName));
+            await stream.CopyToAsync(fs);
+        }
+
+        offer.ImageUrl = fileName;
+
+        await offerData.CreateOffer(offer);
+        modal?.Hide();
+
+        if (OnCreated is not null)
+        {
+            OnCreated(offer);
+        }
+    }
+
+    private async Task UploadPhoto(InputFileChangeEventArgs e)
+    {
+        model.Image = e.File;
+        try
+        {
+            if (e.File.ContentType == MimeTypeMap.GetMimeType(".jpg") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".png") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".gif") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".webp"))
+            {
+                await js.InvokeVoidAsync("previewImage", inputFile?.Element, previewImageElem);
+            }
+        }
+        catch
+        {
+        }
+
+        var field = editContext!.Field(nameof(model.Image));
+        editContext?.NotifyFieldChanged(in field);
+    }
+}

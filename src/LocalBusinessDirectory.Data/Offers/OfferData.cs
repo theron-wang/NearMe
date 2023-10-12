@@ -13,7 +13,7 @@ public class OfferData : IOfferData
 
     public async Task CreateOffer(Offer offer)
     {
-        await _sql.ExecuteAsync("spOffers_Create", offer);
+        await _sql.ExecuteAsync("spOffers_Create", new OfferDbInput(offer));
     }
 
     public async Task DeleteOffer(Offer offer)
@@ -26,13 +26,13 @@ public class OfferData : IOfferData
         return await _sql.GetAsync<Offer>("spOffers_GetByBusinessId", new { BusinessId = id });
     }
 
-    public async Task<Offer> GetById(string id)
+    public async Task<Offer?> GetById(string id)
     {
         return await _sql.GetFirstOrDefaultAsync<Offer>("spOffers_GetById", new { Id = id });
     }
 
     public async Task Update(Offer offer)
     {
-        await _sql.ExecuteAsync("spOffers_Update", offer);
+        await _sql.ExecuteAsync("spOffers_Update", new OfferDbInput(offer));
     }
 }

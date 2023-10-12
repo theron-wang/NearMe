@@ -139,6 +139,8 @@
     private InputFile? inputFile;
     private ElementReference previewImageElem;
 
+    private bool isNewUser;
+
     protected override async Task OnInitializedAsync()
     {
         editContext = new(businessModel);
@@ -151,6 +153,7 @@
         else
         {
             user = dataPersist.Pop<User>("BusinessUser");
+            isNewUser = true;
         }
 
         if (user is null || user.BusinessId != null)
@@ -204,7 +207,7 @@
 
         var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(businessModel.Image!.Name);
 
-        using (var stream = businessModel.Image.OpenReadStream(10 * 1024 * 1024))
+        using (var stream = businessModel.Image.OpenReadStream(3 * 1024 * 1024))
         {
             using var fs = File.OpenWrite(Path.Combine(env.ContentRootPath, "images", fileName));
             await stream.CopyToAsync(fs);
@@ -216,6 +219,13 @@
         await businessData.CreateBusiness(business);
         await userStore.UpdateAsync(user, default);
 
-        nav.NavigateTo("/join");
+        if (isNewUser)
+        {
+            nav.NavigateTo("/join");
+        }
+        else
+        {
+            nav.NavigateTo("/business/" + business.Id, true);
+        }
     }
 }

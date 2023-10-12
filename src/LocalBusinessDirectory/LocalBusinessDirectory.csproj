@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="images\" />
-    <Folder Include="Pages\Business\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,11 +25,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Businesses\View.razor" />
     <_ContentIncludedByDefault Remove="Pages\_AuthLayout.cshtml" />
+    <_ContentIncludedByDefault Remove="Shared\EditBusiness.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Pages\Shared\_AuthLayout.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Businesses\View.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\EditBusiness.razor" />
   </ItemGroup>
 
 </Project>

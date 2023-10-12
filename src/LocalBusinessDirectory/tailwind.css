@@ -13,7 +13,7 @@ html, body {
 }
 
 #blazor-error-ui {
-    @apply bg-red-500 bottom-0 hidden left-0 px-3 py-5 fixed w-full z-[1000];
+    @apply bg-red-500 bottom-0 hidden left-0 px-3 py-5 fixed w-full z-50;
 }
 
     #blazor-error-ui .dismiss {

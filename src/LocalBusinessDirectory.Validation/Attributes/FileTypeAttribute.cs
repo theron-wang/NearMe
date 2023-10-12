@@ -19,6 +19,10 @@ public class FileTypeAttribute : ValidationAttribute
             return _fileTypes.Any(f => f.Equals(Path.GetExtension(file.Name), StringComparison.InvariantCultureIgnoreCase)) &&
                 MimeTypeMap.GetExtension(file.ContentType) == Path.GetExtension(file.Name);
         }
+        else if (value is null)
+        {
+            return true;
+        }
         throw new InvalidOperationException($"Value must be of type IBrowserFile.");
     }
 

@@ -1,11 +1,9 @@
-﻿using LocalBusinessDirectory.Data.Models;
-using LocalBusinessDirectory.Validation.Attributes;
+﻿using LocalBusinessDirectory.Validation.Attributes;
 using Microsoft.AspNetCore.Components.Forms;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace LocalBusinessDirectory.Validation;
-public class NewBusinessModel
+public class EditBusinessModel
 {
     [Required]
     [StringLength(100, MinimumLength = 5)]
@@ -17,8 +15,7 @@ public class NewBusinessModel
     [Display(Name = "description")]
     public string? Description { get; set; }
 
-    [Required]
-    [FileSize(3)]
+    [FileSize(10)]
     [FileType(".webp", ".jpg", ".png", ".gif")]
     [Display(Name = "cover image")]
     public IBrowserFile? Image { get; set; }

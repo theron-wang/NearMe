@@ -6,13 +6,13 @@
         <img src="https://dummyimage.com/36x36/fff/000" class="w-9 h-9" alt="Logo" />
         Our Name
     </a>
-    <div class="flex items-center gap-x-8 text-sm text-black/80 uppercase">
+    <div class="flex items-center gap-x-8 text-sm text-black/80">
         <div class="group relative">
             <div class="cursor-pointer select-none" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
                 Catalog <i class="fa-solid fa-caret-down ml-1"></i>
             </div>
             <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                <div class="flex flex-col whitespace-nowrap bg-white normal-case">
+                <div class="flex flex-col whitespace-nowrap bg-white">
                     <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=restaurant">
                         <div class="inline-block w-4 mr-2">
                             <i class="fa-solid fa-utensils"></i>
@@ -46,7 +46,7 @@
         <AuthorizeView Context="user">
             <Authorized>
                 <div class="group relative">
-                    <div class="cursor-pointer select-none font-bold normal-case" tabindex="-1">
+                    <div class="cursor-pointer select-none font-bold" tabindex="-1">
                         @user.User.Identity?.Name
                         <span class="mx-1">
                             <PricingPlanBadge PricingPlan="(PricingPlan)int.Parse(user.User.FindFirst(DirectoryClaimTypes.Plan)!.Value)" />
@@ -55,13 +55,25 @@
                     </div>
                     <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
                         <div class="opacity-0 absolute top-2 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                            <div class="flex flex-col whitespace-nowrap bg-white normal-case">
-                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="business">
-                                    <div class="inline-block w-4 mr-2">
-                                        <i class="fa-solid fa-briefcase"></i>
-                                    </div>
-                                    Manage your business
-                                </a>
+                            <div class="flex flex-col whitespace-nowrap bg-white">
+                                @if (businessId is null)
+                                {
+                                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="create-business">
+                                        <div class="inline-block w-4 mr-2">
+                                            <i class="fa-solid fa-briefcase"></i>
+                                        </div>
+                                        Create a business
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="business/@businessId">
+                                        <div class="inline-block w-4 mr-2">
+                                            <i class="fa-solid fa-briefcase"></i>
+                                        </div>
+                                        Manage your business
+                                    </a>
+                                }
                                 <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="pricing">
                                     <div class="inline-block w-4 mr-2">
                                         <i class="fa-solid fa-money-bill"></i>
@@ -87,3 +99,15 @@
         </AuthorizeView>
     </div>
 </header>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    private string? businessId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        businessId = (await AuthState!).User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value;
+    }
+}

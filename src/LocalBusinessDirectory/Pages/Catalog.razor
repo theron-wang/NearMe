@@ -10,7 +10,7 @@
 <div class="flex pb-4 border-b mb-8">
     <div class="relative block mt-2 text-sm mr-4">
         <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-            <i class="fa-solid fa-user"></i>
+            <i class="fa-solid fa-store"></i>
         </span>
         <input @bind="name" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Name" aria-label="Search by name" />
     </div>
@@ -25,7 +25,7 @@
             <i class="fa-solid fa-filter mr-2"></i>
             Filter
         </div>
-        <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-[1000] pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
+        <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-50 pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
             <div class="font-bold uppercase mb-2 px-2">Rating</div>
             
             @for (int i = 1; i <= 5; i++)

@@ -21,7 +21,7 @@ builder.Services.AddScoped<IDataPersist, DataPersist>();
 
 builder.Services.AddOptions();
 builder.Services.AddAuthentication()
-    .AddApplicationCookie();
+    .AddCookie(IdentityConstants.ApplicationScheme);
 builder.Services.AddAuthorization();
 
 builder.Services.ConfigureApplicationCookie(options =>

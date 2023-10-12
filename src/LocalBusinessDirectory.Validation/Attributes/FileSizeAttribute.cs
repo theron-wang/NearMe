@@ -17,6 +17,10 @@ public class FileSizeAttribute : ValidationAttribute
         {
             return file.Size <= _sizeInMb * 1024 * 1024;
         }
+        else if (value is null)
+        {
+            return true;
+        }
         throw new InvalidOperationException($"Value must be of type IBrowserFile.");
     }
 
