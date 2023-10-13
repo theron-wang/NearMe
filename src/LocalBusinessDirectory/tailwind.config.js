@@ -23,6 +23,7 @@ module.exports = {
               ...defaultTheme.spacing
           },
           maxWidth: {
+              '1/2': "50%",
               '3/4': "75%",
               ...defaultTheme.spacing
           },

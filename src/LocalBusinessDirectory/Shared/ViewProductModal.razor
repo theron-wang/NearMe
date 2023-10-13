@@ -1,0 +1,163 @@
+﻿@using LocalBusinessDirectory.Helpers;
+@inject IRater rater
+@inject IOfferData offerData
+@inject NavigationManager nav
+@inject IWebHostEnvironment env
+
+<Modal @ref="modal">
+    @if (offer is not null)
+    {
+        <div class="flex gap-8 items-stretch h-full">
+            <img src="images/@offer.ImageUrl" class="h-full w-1/3 object-cover rounded-lg" />
+
+            <div class="pr-8 flex flex-col">
+                <h1 class="text-4xl mb-2">@offer.Name</h1>
+                <div class="text-xs text-black/80 mb-4">
+                    @offer.Type.ToString()
+                </div>
+                <div class="text-black/80 text-sm">
+                    @offer.Description
+                </div>
+                <div class="mt-auto flex flex-col">
+                    @if (isRating && isSignedIn)
+                    {
+                        <StarRater Stars="(userRating is null ? 5 : userRating.Value)" RelatedTo="@offer.Id" Callback="RatingDone" />
+                        <button class="bg-red-600 text-white text-sm rounded-full p-1 px-3 text-center transition hover:bg-red-700 mt-2 w-min" @onclick="ToggleIsRating">Cancel</button>
+                    }
+                    else
+                    {
+                        @if (offer.NumberOfRatings > 0)
+                        {
+                            <StarDisplay Stars="@offer.Rating" />
+                        }
+                        else
+                        {
+                            <span class="text-black/70 text-sm">No ratings</span>
+                        }
+
+                        @if (isSignedIn)
+                        {
+                            <button class="bg-green-600 text-white text-sm rounded-full p-1 px-3 text-center transition hover:bg-green-700 mt-2 w-min" @onclick="ToggleIsRating">Rate</button>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="flex flex-col">
+                @if (canEdit)
+                {
+                    <div class="flex justify-start mt-2">
+                        <button class="mr-8"><i class="fa-solid fa-pen-to-square"></i></button>
+                        @if (showConfirmDeleteButton)
+                        {
+                            <button class="bg-green-600 text-white rounded-lg p-1 px-3 text-center text-sm transition hover:bg-green-700 mr-4 whitespace-nowrap" @onclick="ConfirmDelete"><i class="fa-regular fa-circle-check mr-2"></i> Confirm</button>
+                            <button class="bg-red-600 text-white rounded-lg p-1 px-3 text-center text-sm transition hover:bg-red-700 whitespace-nowrap" type="button" @onclick="CancelDelete"><i class="fa-regular fa-circle-xmark mr-2"></i> Cancel</button>
+                        }
+                        else
+                        {
+                            <button @onclick="PromptDeleteConfirmation"><i class="fa-solid fa-trash"></i></button>
+                        }
+                    </div>
+                }
+                <div class="mt-auto">
+                    <div class="font-bold mb-2 flex items-center text-xl">
+                        @if (hasDiscount)
+                        {
+                            <span class="text-green-800">$@((offer.Price * 0.85m).ToString("0.00"))</span>
+                            <span class="line-through text-sm ml-2">$@offer.Price.ToString("0.00")</span>
+                        }
+                        else
+                        {
+                            @:$@offer.Price.ToString("0.00")
+                        }
+                    </div>
+                    <button class="bg-green-600 w-full text-white rounded-full py-3 text-center transition hover:bg-green-700">Buy now</button>
+                </div>
+            </div>
+        </div>
+    }
+</Modal>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthState { get; set; }
+
+    private Modal? modal;
+    private Offer? offer;
+    private double? userRating;
+    private string? businessOwnerOf;
+    private bool canEdit;
+    private bool isSignedIn;
+    private string? username;
+    private bool hasDiscount;
+    private bool showConfirmDeleteButton;
+
+    private bool isRating;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState!;
+
+        if (state.User.Identity?.IsAuthenticated == true)
+        {
+            businessOwnerOf = state.User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value;
+
+            isSignedIn = true;
+            username = state.User.Identity.Name;
+            var plan = Enum.Parse<PricingPlan>(state.User.FindFirst(DirectoryClaimTypes.Plan)?.Value ?? "None");
+            hasDiscount = plan == PricingPlan.Pro || plan == PricingPlan.Member;
+        }
+    }
+
+    public async Task Show(Offer showOffer)
+    {
+        offer = showOffer;
+        modal?.Show();
+        StateHasChanged();
+
+        userRating = null;
+        if (isSignedIn)
+        {
+            canEdit = businessOwnerOf?.Equals(offer.BusinessId, StringComparison.InvariantCultureIgnoreCase) == true;
+            userRating = await rater.GetCurrentRating(username!, showOffer.Id);
+        }
+
+        StateHasChanged();
+    }
+
+    private void ToggleIsRating()
+    {
+        isRating = !isRating;
+    }
+
+    private void RatingDone(int newRating)
+    {
+        offer!.Rating *= offer.NumberOfRatings;
+        offer!.Rating -= userRating ?? 0;
+        offer!.Rating += newRating;
+        offer!.NumberOfRatings += userRating is null ? 1 : 0;
+
+        offer!.Rating /= offer!.NumberOfRatings;
+        userRating = newRating;
+
+        isRating = false;
+        StateHasChanged();
+    }
+
+    private void PromptDeleteConfirmation()
+    {
+        showConfirmDeleteButton = true;
+    }
+
+    private void CancelDelete()
+    {
+        showConfirmDeleteButton = false;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        File.Delete(Path.Combine(env.ContentRootPath, "images", offer!.ImageUrl));
+        await offerData.DeleteOffer(offer!);
+
+        nav.NavigateTo(nav.Uri, true);
+    }
+}

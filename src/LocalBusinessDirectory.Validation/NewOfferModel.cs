@@ -12,7 +12,7 @@ public class NewOfferModel
     public string? Name { get; set; }
 
     [Required]
-    [StringLength(200, MinimumLength = 50)]
+    [StringLength(1000, MinimumLength = 50)]
     [Display(Name = "description")]
     public string? Description { get; set; }
 

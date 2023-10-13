@@ -150,12 +150,21 @@
             </div>
         </div>
     </div>
-    <div class="grid grid-cols-3 gap-8 min-h-80">
+    <div class="min-h-80">
         @if (viewOffers is not null)
         {
-            @foreach (var offer in viewOffers)
+            @if (viewOffers.Count == 0)
             {
-                @offer.Name
+                <p>No businesses could be found. Try broadening your search criteria.</p>
+            }
+            else
+            {
+                <div class="grid grid-cols-3 gap-8">
+                    @foreach (var offer in viewOffers)
+                    {
+                        <OfferDisplay Offer="offer" Modal="viewProductModal" />
+                    }
+                </div>
             }
         }
     </div>
@@ -164,6 +173,8 @@
 {
     <NewProductModal @ref="newProductModal" BusinessId="@Id" OnCreated="NewOfferCreated" />
 }
+
+<ViewProductModal @ref="viewProductModal" />
 
 @code {
     [Parameter]
@@ -174,6 +185,7 @@
 
     private bool canEdit;
     private bool isSignedIn;
+    private bool isPro;
     private Business? business;
     private double? userRating;
 
@@ -192,6 +204,7 @@
     private decimal? maxPrice;
 
     private NewProductModal? newProductModal;
+    private ViewProductModal? viewProductModal;
 
     protected override async Task OnInitializedAsync()
     {
@@ -201,6 +214,9 @@
         {
             canEdit = state.User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value.Equals(Id, StringComparison.InvariantCultureIgnoreCase) == true;
             isSignedIn = true;
+
+            var plan = Enum.Parse<PricingPlan>(state.User.FindFirst(DirectoryClaimTypes.Plan)?.Value ?? "None");
+            isPro = plan == PricingPlan.Pro || plan == PricingPlan.Member;
         }
 
         business = await businessData.GetBusinessById(Id!);
@@ -229,6 +245,7 @@
         business!.NumberOfRatings += userRating is null ? 1 : 0;
 
         business!.Rating /= business!.NumberOfRatings;
+        userRating = newRating;
 
         isRating = false;
         StateHasChanged();

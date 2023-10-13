@@ -1,0 +1,48 @@
+﻿@if (Offer is not null)
+{
+    <div class="bg-green-50 shadow rounded cursor-pointer flex flex-col transition h-[30rem] hover:bg-green-100" @onclick="OpenModal">
+        <img src="images/@Offer.ImageUrl" class="h-2/5 object-cover" />
+
+        <div class="p-4 flex flex-col flex-1">
+            <div class="text-2xl font-bold mb-2">
+                @Offer.Name
+            </div>
+            <div class="text-xs text-black/80 mb-4">
+                @Offer.Type.ToString()
+            </div>
+            <div class="text-sm text-black/80 mb-4 break-words">
+                @Offer.Description.Substring(0, Math.Min(200, Offer.Description.Length))
+            </div>
+            <div class="flex justify-between items-center mt-auto">
+                <div class="font-bold">
+                    @if (HasDiscount)
+                    {
+                        @:$@(Offer.Price * 0.85m).ToString("0.00")
+                        <span class="line-through text-sm ml-2">$@Offer.Price.ToString("0.00")</span>
+                    }
+                    else
+                    {
+                        @:$@Offer.Price.ToString("0.00")
+                    }
+                </div>
+                <div class="flex items-center">
+                    <StarDisplay Stars="Offer.Rating" /> <span class="text-sm ml-2">(@Offer.NumberOfRatings)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Offer? Offer { get; set; }
+    [Parameter]
+    public ViewProductModal? Modal { get; set; }
+    [Parameter]
+    public bool HasDiscount { get; set; }
+
+    private Task OpenModal()
+    {
+        return (Modal?.Show(Offer!) ?? Task.CompletedTask);
+    }
+}

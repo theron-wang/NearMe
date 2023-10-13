@@ -1,11 +1,11 @@
 ﻿@inherits ComponentBase
 
-<div class="fixed left-0 translate-x-1/2 top-12 max-h-3/4 min-w-1/2 max-w-3/4 overflow-y-auto transition bg-white rounded-lg opacity-0 @(show ? "z-[100] opacity-100 pointer-events-auto" : "-z-50 pointer-events-none")">
+<div class="fixed left-1/2 -translate-x-1/2 top-12 h-3/4 min-w-1/2 max-w-3/4 w-max overflow-y-auto transition bg-white rounded-lg opacity-0 @(show ? "z-[100] opacity-100 pointer-events-auto" : "-z-50 pointer-events-none")">
     <button class="absolute top-3 right-4 text-2xl" @onclick="Hide">
         <i class="fa-regular fa-circle-xmark"></i>
     </button>
 
-    <div class="p-8">
+    <div class="p-8 h-full">
         @ChildContent
     </div>
 </div>
