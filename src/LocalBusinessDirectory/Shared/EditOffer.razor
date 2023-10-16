@@ -1,0 +1,142 @@
+﻿@using MimeTypes
+
+@inject IOfferData offerData
+@inject IJSRuntime js
+@inject IWebHostEnvironment env
+
+@if (Offer is not null)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="Update" class="flex h-full">
+        <DataAnnotationsValidator />
+
+        <div class="w-1/3 relative mr-8">
+            <img src="images/@Offer.ImageUrl" class="h-full w-full object-cover rounded-lg" @ref="@previewImageElem" />
+            <label class="absolute top-4 right-4 bg-gray-50 text-black/80 rounded-lg p-1 px-3 text-center transition cursor-pointer drop-shadow hover:bg-gray-100">
+                <i class="fa-regular fa-image mr-2"></i> Update <InputFile OnChange="UploadPhoto" @ref="inputFile" class="hidden" accept="image/png, image/jpeg, image/gif" />
+            </label>
+        </div>
+        
+        <div class="flex flex-col flex-1">
+            <div class="mb-4">
+                <label for="name">
+                    Name
+                </label>
+                <InputText @bind-Value="editOfferModel.Name" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Product/service name" id="name" />
+                <ValidationMessage For="() => editOfferModel.Name" class="text-red-600 text-sm" />
+            </div>
+            <div class="mb-4">
+                <label for="desc">
+                    Description
+                </label>
+                <InputTextArea @bind-Value="editOfferModel.Description" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Description of your product/service" id="desc" />
+                <ValidationMessage For="() => editOfferModel.Description" class="text-red-600 text-sm" />
+            </div>
+            <div class="mb-4">
+                <label for="price">
+                    Price
+                </label>
+                <div class="relative block">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </span>
+                    <InputNumber min="0" step="any" @bind-Value="editOfferModel.Price" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full pl-10 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" placeholder="Product/service price" id="price" />
+                </div>
+                <ValidationMessage For="() => editOfferModel.Price" class="text-red-600 text-sm" />
+            </div>
+            <div class="mb-4">
+                <label for="category">
+                    Type
+                </label>
+                <InputSelect @bind-Value="editOfferModel.Type" class="bg-white w-full border border-b-black/10 rounded-lg pl-4 p-3 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition my-2" id="type">
+                    @foreach (var offerType in Enum.GetValues<OfferType>())
+                    {
+                        <option value="@offerType">@offerType.ToString()</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => editOfferModel.Type" class="text-red-600 text-sm" />
+            </div>
+
+            <div class="pb-4">
+                <button class="bg-green-600 text-white rounded-lg p-1 px-3 text-center transition hover:bg-green-700 mr-4"><i class="fa-regular fa-circle-check mr-2"></i> Save</button>
+                <button class="bg-red-600 text-white rounded-lg p-1 px-3 text-center transition hover:bg-red-700" type="button" @onclick="Dismiss"><i class="fa-regular fa-circle-xmark mr-2"></i> Cancel</button>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public Offer? Offer { get; set; }
+    [Parameter]
+    public Action? OnClose { get; set; }
+
+    private EditContext? editContext;
+    private EditOfferModel editOfferModel = new();
+
+    private InputFile? inputFile;
+    private ElementReference previewImageElem;
+
+    protected override void OnInitialized()
+    {
+        editOfferModel.Description = Offer!.Description;
+        editOfferModel.Name = Offer.Name;
+        editOfferModel.Price = (double)Offer.Price;
+        editOfferModel.Type = Offer.Type;
+
+        editContext = new(editOfferModel);
+    }
+
+    private async Task UploadPhoto(InputFileChangeEventArgs e)
+    {
+        editOfferModel.Image = e.File;
+        try
+        {
+            if (e.File.ContentType == MimeTypeMap.GetMimeType(".jpg") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".png") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".gif") ||
+                e.File.ContentType == MimeTypeMap.GetMimeType(".webp"))
+            {
+                await js.InvokeVoidAsync("previewImage", inputFile?.Element, previewImageElem);
+            }
+        }
+        catch
+        {
+        }
+
+        var field = editContext!.Field(nameof(editOfferModel.Image));
+        editContext?.NotifyFieldChanged(in field);
+    }
+
+    private async Task Update()
+    {
+        Offer!.Description = editOfferModel.Description;
+        Offer.Name = editOfferModel.Name;
+        Offer.Price = (decimal)editOfferModel.Price;
+        Offer.Type = editOfferModel.Type;
+
+        if (editOfferModel.Image is not null)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName()) + Path.GetExtension(editOfferModel.Image!.Name);
+
+            using (var stream = editOfferModel.Image.OpenReadStream(3 * 1024 * 1024))
+            {
+                using var fs = File.OpenWrite(Path.Combine(env.ContentRootPath, "images", fileName));
+                await stream.CopyToAsync(fs);
+            }
+
+            Offer.ImageUrl = fileName;
+        }
+
+        await offerData.Update(Offer);
+
+        Dismiss();
+    }
+
+    private void Dismiss()
+    {
+        if (OnClose is not null)
+        {
+            OnClose();
+        }
+    }
+}

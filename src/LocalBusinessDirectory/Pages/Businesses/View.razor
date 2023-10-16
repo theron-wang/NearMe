@@ -11,6 +11,8 @@
 
 @if (business is not null)
 {
+    <PageTitle>@business.Name | [Our Brand]</PageTitle>
+
     <div class="relative w-full h-[25vw]">
         <div class="absolute left-0 top-0 w-full z-[-1] brightness-50 bg-[center_top] bg-black/50">
             <img src="/images/@business.ImageUrl" class="w-full h-[25vw] object-cover" @ref="bgImage" />
