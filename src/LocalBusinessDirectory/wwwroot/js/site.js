@@ -3,3 +3,14 @@ function previewImage(inputElem, imgElem) {
     imgElem.addEventListener('load', () => URL.revokeObjectURL(url), { once: true });
     imgElem.src = url;
 }
+
+async function getPosition() {
+    try {
+        const pos = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+        return [pos.coords.longitude, pos.coords.latitude];
+    } catch {
+        return null;
+    }
+}

@@ -1,9 +1,12 @@
 ﻿@page "/catalog"
 @using LocalBusinessDirectory.Data.Businesses
 @using LocalBusinessDirectory.Data.Categories;
+@using LocalBusinessDirectory.Helpers;
 
 @inject IBusinessData businessData
 @inject ICategoryData categoryData
+@inject IZipCodeLookup zipCodeLookupProvider
+@inject IJSRuntime js
 
 <PageTitle>Small Businesses Near You | [Our Brand]</PageTitle>
 
@@ -90,6 +93,10 @@
     private List<Business>? viewBusinesses;
     private List<Category>? categories;
 
+    private ILookup<char, ZipCodeLookup.ZipCode>? zipCodeLookup;
+    private double lat = double.NaN;
+    private double lon = double.NaN;
+
     private string? name;
     private string? location;
     private int? searchRating;
@@ -106,7 +113,19 @@
             searchCategories.Add(categories.First(c => c.Name.Equals(Type, StringComparison.InvariantCultureIgnoreCase)));
         }
 
+        zipCodeLookup = await zipCodeLookupProvider.Load();
+
         Filter();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var pos = await js.InvokeAsync<double[]>("getPosition");
+        if (pos is not null)
+        {
+            lat = pos[0];
+            lon = pos[1];
+        }
     }
 
     private void ToggleCategory(Category category)
@@ -125,8 +144,10 @@
 
     private void Filter()
     {
+        var comparer = new ZipCodeComparer(zipCodeLookup!, lat, lon);
+
         var addressTokenized = location?.ToLower().Split(new char[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-        viewBusinesses = businesses?.Where(b =>
+        var filtered = businesses?.Where(b =>
             (addressTokenized is null || 
                 addressTokenized.All(a => b.Address.AddressStreet.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
                          b.Address.AddressCity.Contains(a, StringComparison.InvariantCultureIgnoreCase) ||
@@ -137,7 +158,17 @@
             (searchRating is null || b.Rating >= searchRating) &&
             (searchCategories.Count == 0 || searchCategories.Any(c => c.Name.Equals(b.CategoryName, StringComparison.InvariantCultureIgnoreCase))) &&
             (membership == false || b.IsPartnered)
-        ).OrderByDescending(o => o.IsPartnered).ToList();
+        );
+
+        if (double.IsNaN(lat) || double.IsNaN(lon))
+        {
+            viewBusinesses = filtered?.OrderByDescending(o => o.IsPartnered).ToList();
+        }
+        else
+        {
+            viewBusinesses = filtered?.OrderBy(o => o.Address.AddressZipCode, comparer)
+                                      .ThenByDescending(o => o.IsPartnered).ToList();
+        }
     }
 
     private void SetSearchRating(int rating)
