@@ -4,6 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@property --tw-scale-x {
+    syntax: '<number>';
+    initial-value: 1;
+    inherits: false;
+}
+
+@property --tw-scale-y {
+    syntax: '<number>';
+    initial-value: 1;
+    inherits: false;
+}
+
 html, body {
     @apply font-default h-full;
 }

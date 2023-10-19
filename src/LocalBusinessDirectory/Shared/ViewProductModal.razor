@@ -1,8 +1,12 @@
 ﻿@using LocalBusinessDirectory.Helpers;
+@using LocalBusinessDirectory.Data.Orders;
+@using Microsoft.AspNetCore.Identity;
 @inject IRater rater
 @inject IOfferData offerData
 @inject NavigationManager nav
 @inject IWebHostEnvironment env
+@inject IOrderData orderData
+@inject IUserStore<User> userStore
 
 <Modal @ref="modal">
     @if (offer is not null)
@@ -76,7 +80,14 @@
                                 @:$@offer.Price.ToString("0.00")
                             }
                         </div>
-                        <button class="bg-green-600 w-full text-white rounded-full py-3 text-center transition hover:bg-green-700">Buy now</button>
+                        @if (ordered == false)
+                        {
+                            <button class="bg-green-600 w-full text-white rounded-full text-sm py-3 px-9 whitespace-nowrap text-center transition hover:bg-green-700" @onclick="Order">Buy now</button>
+                        }
+                        else
+                        {
+                            <button class="bg-green-600 w-full text-white rounded-full text-sm p-3 whitespace-nowrap text-center transition disabled:bg-green-400 hover:bg-green-700" disabled><i class="fa-solid fa-circle-check mr-1"></i> Order placed</button>
+                        }
                     </div>
                 </div>
             }
@@ -97,6 +108,8 @@
     private string? username;
     private bool hasDiscount;
     private bool showConfirmDeleteButton;
+
+    private bool ordered;
 
     private bool isRating;
     private bool isEditing;
@@ -119,6 +132,7 @@
     public async Task Show(Offer showOffer)
     {
         offer = showOffer;
+        ordered = false;
         modal?.Show();
         StateHasChanged();
 
@@ -178,5 +192,18 @@
         await offerData.DeleteOffer(offer!);
 
         nav.NavigateTo(nav.Uri, true);
+    }
+
+    private async Task Order()
+    {
+        // await orderData.Order(new Order()
+        // {
+        //     Offer = offer,
+        //     IsDiscounted = hasDiscount,
+        //     PriceWhenBought = offer!.Price,
+        //     UserId = (await userStore.FindByNameAsync(username!, default))!.Id
+        // });
+
+        ordered = true;
     }
 }

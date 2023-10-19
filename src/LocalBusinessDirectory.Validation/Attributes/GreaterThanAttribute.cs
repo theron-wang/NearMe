@@ -17,6 +17,6 @@ public class GreaterThanAttribute<T> : ValidationAttribute where T : IComparable
 
     public override string FormatErrorMessage(string name)
     {
-        return $"{name[0].ToString().ToUpper()}{name[1..]} must be greater than {_greaterThan}";
+        return $"{name[0].ToString().ToUpper()}{name[1..]} must be greater than {_greaterThan}.";
     }
 }

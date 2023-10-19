@@ -912,6 +912,48 @@ video {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+@keyframes enlarge{
+  0%{
+    --tw-scale-x: .97;
+    --tw-scale-y: .97;
+  }
+
+  50%{
+    --tw-scale-x: 1.03;
+    --tw-scale-y: 1.03;
+  }
+
+  100%{
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+  }
+}
+
+.animate-enlarge{
+  animation: enlarge 0.2s cubic-bezier(0.42, 0, 0.63, 1.77) forwards;
+}
+
+@keyframes enlarge-small{
+  0%{
+    --tw-scale-x: .99;
+    --tw-scale-y: .99;
+  }
+
+  50%{
+    --tw-scale-x: 1.01;
+    --tw-scale-y: 1.01;
+  }
+
+  100%{
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+  }
+}
+
+.animate-enlarge-small{
+  animation: enlarge-small 0.2s cubic-bezier(0.42, 0, 0.63, 1.77) forwards;
+}
+
 .cursor-pointer{
   cursor: pointer;
 }
@@ -1257,6 +1299,26 @@ video {
   padding-bottom: 2rem;
 }
 
+.px-5{
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.px-9{
+  padding-left: 2.25rem;
+  padding-right: 2.25rem;
+}
+
+.px-10{
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+}
+
+.px-11{
+  padding-left: 2.75rem;
+  padding-right: 2.75rem;
+}
+
 .pb-4{
   padding-bottom: 1rem;
 }
@@ -1538,6 +1600,22 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+@property --tw-scale-x {
+  syntax: '<number>';
+
+  initial-value: 1;
+
+  inherits: false;
+}
+
+@property --tw-scale-y {
+  syntax: '<number>';
+
+  initial-value: 1;
+
+  inherits: false;
+}
+
 html, body{
   height: 100%;
   font-family: Inter, Helvetica, Arial, sans-serif;
@@ -1745,6 +1823,27 @@ html, body{
 
 .group:hover .group-hover\:pointer-events-auto{
   pointer-events: auto;
+}
+
+@keyframes enlarge{
+  0%{
+    --tw-scale-x: .97;
+    --tw-scale-y: .97;
+  }
+
+  50%{
+    --tw-scale-x: 1.03;
+    --tw-scale-y: 1.03;
+  }
+
+  100%{
+    --tw-scale-x: 1;
+    --tw-scale-y: 1;
+  }
+}
+
+.group:hover .group-hover\:animate-enlarge{
+  animation: enlarge 0.2s cubic-bezier(0.42, 0, 0.63, 1.77) forwards;
 }
 
 .group:hover .group-hover\:opacity-100{

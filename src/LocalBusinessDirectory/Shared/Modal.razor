@@ -1,6 +1,6 @@
 ﻿@inherits ComponentBase
 
-<div class="fixed left-1/2 -translate-x-1/2 top-12 h-3/4 min-w-1/2 max-w-3/4 w-max transition bg-white rounded-lg opacity-0 @(show ? "z-[100] opacity-100 pointer-events-auto" : "-z-50 pointer-events-none")">
+<div class="fixed left-1/2 -translate-x-1/2 top-12 h-3/4 min-w-1/2 max-w-3/4 w-max transition bg-white rounded-lg opacity-0 @(show ? "z-[100] opacity-100 pointer-events-auto animate-enlarge-small" : "-z-50 pointer-events-none")">
     <button class="absolute top-3 right-6 text-2xl" @onclick="Hide">
         <i class="fa-solid fa-xmark"></i>
     </button>

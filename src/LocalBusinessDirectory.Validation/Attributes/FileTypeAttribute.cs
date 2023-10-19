@@ -28,6 +28,6 @@ public class FileTypeAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return $"{name[0].ToString().ToUpper()}{name[1..]} file format must be {string.Join(", ", _fileTypes)}";
+        return $"{name[0].ToString().ToUpper()}{name[1..]} file format must be {string.Join(", ", _fileTypes)}.";
     }
 }

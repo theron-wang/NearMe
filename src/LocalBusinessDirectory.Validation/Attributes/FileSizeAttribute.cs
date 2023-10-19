@@ -26,6 +26,6 @@ public class FileSizeAttribute : ValidationAttribute
 
     public override string FormatErrorMessage(string name)
     {
-        return $"{name[0].ToString().ToUpper()}{name[1..]} must be smaller than {_sizeInMb}MB";
+        return $"{name[0].ToString().ToUpper()}{name[1..]} must be smaller than {_sizeInMb}MB.";
     }
 }

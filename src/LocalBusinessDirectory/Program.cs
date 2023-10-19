@@ -1,3 +1,4 @@
+using LocalBusinessDirectory.Data.Orders;
 using LocalBusinessDirectory.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.FileProviders;
@@ -12,6 +13,7 @@ builder.Services.AddSingleton<ISqlAccess, SqlAccess>();
 builder.Services.AddSingleton<IBusinessData, BusinessData>();
 builder.Services.AddSingleton<ICategoryData, CategoryData>();
 builder.Services.AddSingleton<IOfferData, OfferData>();
+builder.Services.AddSingleton<IOrderData, OrderData>();
 builder.Services.AddSingleton<IRater, Rater>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddSingleton<IUserStore<User>, UserData>();

@@ -34,7 +34,7 @@
                                 {
                                     <span class="group relative flex ml-2">
                                         <span class="p-1 cursor-pointer text-green-800 hover:text-green-900 transition font-bold text-sm bg-green-200 rounded"><i class="fa-solid fa-star mr-1"></i>MEMBER</span>
-                                        <span class="opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 transition duration-100 ease-in-out pointer-events-none text-white text-center flex flex-col items-center group-hover:opacity-100 group-hover:pointer-events-auto">
+                                        <span class="opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 transition duration-100 ease-in-out pointer-events-none text-white text-center flex flex-col items-center group-hover:opacity-100 group-hover:animate-enlarge group-hover:pointer-events-auto">
                                             <span class="bg-neutral-900 text-xs rounded whitespace-nowrap p-1">
                                                 [Our Brand] Member
                                             </span>
@@ -120,8 +120,8 @@
             </span>
             <input type="number" step="1" min="0" @bind="maxPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Maximum price" aria-label="Search by max. price" />
         </div>
-        <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer group relative" tabindex="0">
-            <div>
+        <div class="flex items-center group font-bold text-sm uppercase select-none group relative" tabindex="0">
+            <div class="cursor-pointer">
                 <i class="fa-solid fa-filter mr-2"></i>
                 Filter
             </div>
@@ -131,7 +131,7 @@
                 @for (int i = 1; i <= 5; i++)
                 {
                     var rating = i;
-                    <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300">
+                    <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300 cursor-pointer">
                         <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
                         <span class="mr-2">
                             <StarDisplay Stars="i" SmallSpacing="true" />
@@ -144,7 +144,7 @@
 
                 @foreach (var offerType in Enum.GetValues<OfferType>())
                 {
-                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300 cursor-pointer">
                         <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(types.Contains(offerType))" @oninput="() => ToggleOfferType(offerType)" />
                         @offerType.ToString()
                     </label>

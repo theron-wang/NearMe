@@ -3,10 +3,13 @@
 @using LocalBusinessDirectory.Data.Categories;
 @using LocalBusinessDirectory.Helpers;
 
+@implements IDisposable
+
 @inject IBusinessData businessData
 @inject ICategoryData categoryData
 @inject IZipCodeLookup zipCodeLookupProvider
 @inject IJSRuntime js
+@inject NavigationManager nav
 
 <PageTitle>Small Businesses Near You | [Our Brand]</PageTitle>
 
@@ -25,8 +28,8 @@
         </span>
         <input @bind="location" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Location" aria-label="Search by city" />
     </div>
-    <div class="flex items-center group font-bold text-sm uppercase select-none cursor-pointer group relative" tabindex="0">
-        <div>
+    <div class="flex items-center group font-bold text-sm uppercase select-none group relative" tabindex="0">
+        <div class="cursor-pointer">
             <i class="fa-solid fa-filter mr-2"></i>
             Filter
         </div>
@@ -36,7 +39,7 @@
             @for (int i = 1; i <= 5; i++)
             {
                 var rating = i;
-                <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300">
+                <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300 cursor-pointer">
                     <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
                     <span class="mr-2">
                         <StarDisplay Stars="i" SmallSpacing="true" />
@@ -51,7 +54,7 @@
 
                 @foreach (var category in categories)
                 {
-                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+                    <label class="px-4 py-2 transition duration-200 flex items-center cursor-pointer hover:bg-gray-300">
                         <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchCategories.Contains(category))" @oninput="() => ToggleCategory(category)" />
                         @category.Name
                     </label>
@@ -60,7 +63,7 @@
 
             <div class="font-bold uppercase my-2 px-2">Membership</div>
 
-            <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300">
+            <label class="px-4 py-2 transition duration-200 flex items-center cursor-pointer hover:bg-gray-300">
                 <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" @bind="membership" @bind:after="Filter" />
                 Is a member
             </label>
@@ -115,7 +118,26 @@
 
         zipCodeLookup = await zipCodeLookupProvider.Load();
 
+        nav.LocationChanged += LocationChanged;
+
         Filter();
+    }
+
+    private void LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        searchCategories.Clear();
+        if (categories is not null && string.IsNullOrEmpty(Type) == false && categories.Any(c => c.Name.Equals(Type, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            searchCategories.Add(categories.First(c => c.Name.Equals(Type, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
+        Filter();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        nav.LocationChanged -= LocationChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
