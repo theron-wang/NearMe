@@ -23,12 +23,12 @@ public class OrderData : IOrderData
 
     public async Task<Order?> GetOrderById(int id)
     {
-        return await _sql.GetFirstOrDefaultAsync<Order>("spOrders_GetOrderById", new { Id = id });
+        return await _sql.GetFirstOrDefaultAsync<Order>("spOrders_GetById", new { Id = id });
     }
 
-    public async Task<List<Order>> GetOrdersByUser(int userId)
+    public async Task<List<Order>> GetOrdersByUser(string username)
     {
-        return await _sql.GetAsync<Order>("spOrders_GetOrdersByUser", new { UserId = userId });
+        return await _sql.GetAsync<Order>("spOrders_GetByUser", new { Username = username });
     }
 
     public async Task DeleteOrder(int id)

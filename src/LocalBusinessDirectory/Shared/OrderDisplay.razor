@@ -1,0 +1,69 @@
+﻿@using LocalBusinessDirectory.Data.Orders;
+@using LocalBusinessDirectory.Helpers;
+@inject NavigationManager nav
+@inject IOrderData orderData
+
+@if (Order is not null && Order.Offer is not null)
+{
+    <div class="bg-green-50 shadow rounded p-8 flex transition hover:bg-green-100">
+        <div class="h-48 max-h-48 w-1/4 min-w-1/4 overflow-hidden">
+            <img src="images/@Order.Offer.ImageUrl" class="rounded h-full object-cover" />
+        </div>
+        <div class="max-h-48 overflow-hidden px-8 flex-1">
+            <div class="font-bold mb-3 text-lg">
+                <a href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">@Order.Offer.Name</a>
+            </div>
+            <div class="mb-4 flex items-center text-black/80">
+                Offered by: <a href="/businesses/@Order.Offer.BusinessId">@Order.BusinessName</a>
+            </div>
+            <div class="font-bold">
+                @if (Order.IsDiscounted)
+                {
+                    @:$@(Order.PriceWhenBought * 0.85m).ToString("0.00")
+                    <span class="line-through text-sm ml-2">$@Order.PriceWhenBought.ToString("0.00")</span>
+                }
+                else
+                {
+                    @:$@Order.PriceWhenBought.ToString("0.00")
+                }
+            </div>
+            <div class="@(Order.Status == OrderStatus.Fulfilled ? "text-green-800" : (Order.Status == OrderStatus.Cancelled ? "text-red-800" : ""))">
+                @Order.Status.ToFormattedString()
+            </div>
+            <div>
+                <a class="bg-green-600 w-min text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-700" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Order again</a>
+            </div>
+        </div>
+        <div class="flex flex-col items-end">
+            @if (Order.Status == OrderStatus.Fulfilled)
+            {
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Leave a rating</a>
+                <a class="bg-green-600 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-700" href="/businesses/@Order.Offer.BusinessId">Browse seller</a>
+            }
+            else if (Order.Status == OrderStatus.Cancelled)
+            {
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId">Browse seller</a>
+            }
+            else
+            {
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
+                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Leave a rating</a>
+                <button class="bg-red-600 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-red-700" @onclick="Cancel">Cancel</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Order? Order { get; set; }
+
+    private async Task Cancel()
+    {
+        Order!.Status = OrderStatus.Cancelled;
+
+        await orderData.Update(Order);
+    }
+}

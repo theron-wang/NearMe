@@ -88,7 +88,6 @@
     <Build Include="Stored Procedures\Categories\spCategories_GetAll.sql" />
     <Build Include="Orders.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_Create.sql" />
-    <Build Include="Stored Procedures\Orders\spOrders_Delete.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_GetById.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_GetByUser.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_Update.sql" />

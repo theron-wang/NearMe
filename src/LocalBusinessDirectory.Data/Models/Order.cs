@@ -8,6 +8,8 @@ public class Order
     /// Db does not return <see cref="Offer.Rating"/> or <see cref="Offer.NumberOfRatings"/>
     /// </summary>
     public Offer? Offer { get; set; }
+    public string? BusinessName { get; set; }
+    public OrderStatus Status { get; set; }
     public decimal PriceWhenBought { get; set; }
     public bool IsDiscounted { get; set; }
 }

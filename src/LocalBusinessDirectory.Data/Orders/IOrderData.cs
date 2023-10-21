@@ -5,7 +5,7 @@ public interface IOrderData
 {
     Task DeleteOrder(int id);
     Task<Order?> GetOrderById(int id);
-    Task<List<Order>> GetOrdersByUser(int userId);
+    Task<List<Order>> GetOrdersByUser(string username);
     Task Order(Order order);
     Task Update(Order order);
 }
