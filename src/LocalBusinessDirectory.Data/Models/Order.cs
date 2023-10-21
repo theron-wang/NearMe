@@ -3,6 +3,7 @@ public class Order
 {
     public int Id { get; set; }
     public int UserId { get; set; }
+    public string? OfferId { get; set; }
     /// <summary>
     /// Db does not return <see cref="Offer.Rating"/> or <see cref="Offer.NumberOfRatings"/>
     /// </summary>
