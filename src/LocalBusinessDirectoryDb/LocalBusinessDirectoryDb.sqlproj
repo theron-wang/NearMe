@@ -62,6 +62,7 @@
     <Folder Include="Stored Procedures\Offers" />
     <Folder Include="Stored Procedures\Users" />
     <Folder Include="Stored Procedures\Categories" />
+    <Folder Include="Stored Procedures\Orders" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Businesses.sql" />
@@ -85,6 +86,12 @@
     <Build Include="Stored Procedures\Users\spUsers_FindByName.sql" />
     <Build Include="Stored Procedures\Users\spUsers_Update.sql" />
     <Build Include="Stored Procedures\Categories\spCategories_GetAll.sql" />
+    <Build Include="Orders.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_Create.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_Delete.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_GetById.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_GetByUser.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalBusinessDirectoryDb.publish.xml" />
