@@ -69,6 +69,13 @@
                         </div>
                     }
                     <div class="mt-auto">
+                        @if (orderedBefore)
+                        {
+                            <div class="mb-4 bg-green-100 border border-green-300 text-green-900 text-sm rounded-lg p-2">
+                                <i class="fa-solid fa-circle-info mr-2"></i> You have ordered this @offer.Type.ToFormattedString().ToLower() before. 
+                                <a class="underline font-bold" href="/orders">Click to view your previous orders.</a>
+                            </div>
+                        }
                         <div class="font-bold mb-2 flex items-center text-xl">
                             @if (hasDiscount)
                             {
@@ -114,6 +121,8 @@
     private bool isRating;
     private bool isEditing;
 
+    private bool orderedBefore;
+
     protected override async Task OnInitializedAsync()
     {
         var state = await AuthState!;
@@ -133,6 +142,7 @@
     {
         offer = showOffer;
         ordered = false;
+        orderedBefore = false;
         modal?.Show();
         StateHasChanged();
 
@@ -141,6 +151,7 @@
         {
             canEdit = businessOwnerOf?.Equals(offer.BusinessId, StringComparison.InvariantCultureIgnoreCase) == true;
             userRating = await rater.GetCurrentRating(username!, showOffer.Id);
+            orderedBefore = await orderData.HasUserOrderedBefore(username!, showOffer.Id);
         }
 
         StateHasChanged();
@@ -196,13 +207,13 @@
 
     private async Task Order()
     {
-        // await orderData.Order(new Order()
-        // {
-        //     Offer = offer,
-        //     IsDiscounted = hasDiscount,
-        //     PriceWhenBought = offer!.Price,
-        //     UserId = (await userStore.FindByNameAsync(username!, default))!.Id
-        // });
+        await orderData.Order(new Order()
+        {
+            Offer = offer,
+            IsDiscounted = hasDiscount,
+            PriceWhenBought = offer!.Price,
+            UserId = (await userStore.FindByNameAsync(username!, default))!.Id
+        });
 
         ordered = true;
     }

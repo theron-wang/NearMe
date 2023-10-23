@@ -13,7 +13,7 @@ public class OrderData : IOrderData
 
     public async Task Order(Order order)
     {
-        await _sql.ExecuteAsync("spOrders_Order", new { order.UserId, OfferId = order.Offer?.Id, order.PriceWhenBought, order.IsDiscounted });
+        await _sql.ExecuteAsync("spOrders_Create", new { order.UserId, OfferId = order.Offer?.Id, order.PriceWhenBought, order.IsDiscounted });
     }
 
     public async Task Update(Order order)
@@ -21,18 +21,17 @@ public class OrderData : IOrderData
         await _sql.ExecuteAsync("spOrders_Update", new OrderDb(order));
     }
 
-    public async Task<Order?> GetOrderById(int id)
-    {
-        return await _sql.GetFirstOrDefaultAsync<Order>("spOrders_GetById", new { Id = id });
-    }
-
     public async Task<List<Order>> GetOrdersByUser(string username)
     {
-        return await _sql.GetAsync<Order>("spOrders_GetByUser", new { Username = username });
+        return await _sql.GetAsync<Order, Order, Offer>("spOrders_GetByUser", new { Username = username }, (or, of) =>
+        {
+            or.Offer = of;
+            return or;
+        });
     }
 
-    public async Task DeleteOrder(int id)
+    public async Task<bool> HasUserOrderedBefore(string username, string offerId)
     {
-        await _sql.ExecuteAsync("spOrders_Delete", new { Id = id });
+        return await _sql.GetFirstOrDefaultAsync<bool>("spOrders_HasUserOrderedBefore", new { Username = username, OfferId = offerId });
     }
 }

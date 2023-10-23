@@ -157,7 +157,14 @@
         {
             @if (viewOffers.Count == 0)
             {
-                <p>No businesses could be found. Try broadening your search criteria.</p>
+                @if (offers.Count == 0)
+                {
+                    <p>This business currently has no offers. Check back later!</p>
+                }
+                else
+                {
+                    <p>No businesses could be found. Try broadening your search criteria.</p>
+                }
             }
             else
             {

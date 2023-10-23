@@ -9,5 +9,5 @@ BEGIN
     INSERT INTO [dbo].[Users] ([Name], [Email], [PasswordHash], [PricingPlan], [BusinessId])
     VALUES (@Name, @Email, @PasswordHash, @PricingPlan, @BusinessId);
 
-    return SCOPE_IDENTITY();
+    select SCOPE_IDENTITY();
 END;

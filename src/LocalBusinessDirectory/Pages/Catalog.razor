@@ -142,11 +142,17 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var pos = await js.InvokeAsync<double[]>("getPosition");
-        if (pos is not null)
+        if (firstRender)
         {
-            lat = pos[0];
-            lon = pos[1];
+            var pos = await js.InvokeAsync<double[]>("getPosition");
+            if (pos is not null)
+            {
+                lat = pos[0];
+                lon = pos[1];
+            }
+
+            Filter();
+            StateHasChanged();
         }
     }
 

@@ -4,6 +4,6 @@ CREATE TABLE [dbo].[Orders](
 	[OfferId] [varchar](36) NOT NULL,
 	[PriceWhenBought] decimal(7,2) NOT NULL,
 	[IsDiscounted] bit NOT NULL,
-	[Status] int NOT NULL
+	[Status] int NOT NULL DEFAULT 0
 )
 

@@ -5,21 +5,23 @@
 
 @if (Order is not null && Order.Offer is not null)
 {
-    <div class="bg-green-50 shadow rounded p-8 flex transition hover:bg-green-100">
+    <div class="bg-green-50 shadow rounded-lg p-8 flex transition hover:bg-green-100">
         <div class="h-48 max-h-48 w-1/4 min-w-1/4 overflow-hidden">
-            <img src="images/@Order.Offer.ImageUrl" class="rounded h-full object-cover" />
+            <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id">
+                <img src="images/@Order.Offer.ImageUrl" class="rounded-lg h-full object-cover" />
+            </a>
         </div>
-        <div class="max-h-48 overflow-hidden px-8 flex-1">
+        <div class="max-h-48 overflow-hidden px-8 flex-1 flex flex-col">
             <div class="font-bold mb-3 text-lg">
-                <a href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">@Order.Offer.Name</a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id">@Order.Offer.Name</a>
             </div>
             <div class="mb-4 flex items-center text-black/80">
-                Offered by: <a href="/businesses/@Order.Offer.BusinessId">@Order.BusinessName</a>
+                Offered by:&nbsp;<a href="/business/@Order.Offer.BusinessId">@Order.BusinessName</a>
             </div>
             <div class="font-bold">
                 @if (Order.IsDiscounted)
                 {
-                    @:$@(Order.PriceWhenBought * 0.85m).ToString("0.00")
+                    @:$@((Order.PriceWhenBought * 0.85m).ToString("0.00"))
                     <span class="line-through text-sm ml-2">$@Order.PriceWhenBought.ToString("0.00")</span>
                 }
                 else
@@ -30,27 +32,25 @@
             <div class="@(Order.Status == OrderStatus.Fulfilled ? "text-green-800" : (Order.Status == OrderStatus.Cancelled ? "text-red-800" : ""))">
                 @Order.Status.ToFormattedString()
             </div>
-            <div>
-                <a class="bg-green-600 w-min text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-700" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Order again</a>
-            </div>
+            <a class="bg-green-600 w-min text-white rounded-lg py-3 px-6 mt-auto whitespace-nowrap text-center transition hover:bg-green-700" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id">Order again</a>
         </div>
-        <div class="flex flex-col items-end">
+        <div class="flex items-start gap-4">
             @if (Order.Status == OrderStatus.Fulfilled)
             {
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Leave a rating</a>
-                <a class="bg-green-600 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-700" href="/businesses/@Order.Offer.BusinessId">Browse seller</a>
+                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
+                <a class="" href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
             }
             else if (Order.Status == OrderStatus.Cancelled)
             {
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId">Browse seller</a>
+                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a class="" href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
             }
             else
             {
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">View @Order.Offer.Type.ToString().ToLower()</a>
-                <a class="bg-green-400 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-green-500" href="/businesses/@Order.Offer.BusinessId?product=@Order.Offer.Id">Leave a rating</a>
-                <button class="bg-red-600 w-full text-white rounded-sm py-3 px-6 text-center transition hover:bg-red-700" @onclick="Cancel">Cancel</button>
+                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
+                <button title="Cancel" @onclick="Cancel"><i class="fa-solid fa-ban"></i></button>
             }
         </div>
     </div>
