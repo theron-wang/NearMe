@@ -12,7 +12,7 @@
 @inject IConfiguration config
 @inject IJSRuntime js
 
-<PageTitle>Create Your Business | [Our Brand]</PageTitle>
+<PageTitle>Create Your Business | NearMe</PageTitle>
 
 <h1 class="text-3xl mb-8">Register your business</h1>
 <EditForm EditContext="editContext" OnValidSubmit="CreateNewBusiness">
@@ -223,7 +223,7 @@
 
         if (isNewUser)
         {
-            nav.NavigateTo("/join");
+            nav.NavigateTo("/join", true);
         }
         else
         {

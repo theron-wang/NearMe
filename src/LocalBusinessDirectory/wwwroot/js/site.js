@@ -9,7 +9,7 @@ async function getPosition() {
         const pos = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject);
         });
-        return [pos.coords.longitude, pos.coords.latitude];
+        return [pos.coords.latitude, pos.coords.longitude];
     } catch {
         return null;
     }

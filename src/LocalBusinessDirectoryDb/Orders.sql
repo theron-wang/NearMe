@@ -1,11 +1,9 @@
 CREATE TABLE [dbo].[Orders](
 	[Id] INT IDENTITY(1,1) PRIMARY KEY,
-	[OffersId] [varchar](36) NULL,
-	[Quantity] [int] NULL,
-	[UserId] [int] NULL,
-	[BusinessesId] [varchar](36) NULL,
-	[CategoriesId] [int] NULL,
-	[PriceWhenBought] decimal(7,2),
-	[IsDiscounted] bit
+	[UserId] [int] NOT NULL,
+	[OfferId] [varchar](36) NOT NULL,
+	[PriceWhenBought] decimal(7,2) NOT NULL,
+	[IsDiscounted] bit NOT NULL,
+	[Status] int NOT NULL DEFAULT 0
 )
 

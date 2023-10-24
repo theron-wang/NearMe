@@ -34,6 +34,8 @@ public class ZipCodeComparer : IComparer<string>
 
         lat1 *= Math.PI / 180;
         lat2 *= Math.PI / 180;
+        lon1 *= Math.PI / 180;
+        lon2 *= Math.PI / 180;
 
         var a = Math.Pow(Math.Sin((lat2 - lat1) / 2), 2) +
             Math.Cos(lat1) * Math.Cos(lat2) *

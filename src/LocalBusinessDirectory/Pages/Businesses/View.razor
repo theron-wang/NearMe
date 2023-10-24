@@ -11,7 +11,7 @@
 
 @if (business is not null)
 {
-    <PageTitle>@business.Name | [Our Brand]</PageTitle>
+    <PageTitle>@business.Name | NearMe</PageTitle>
 
     <div class="relative w-full h-[25vw]">
         <div class="absolute left-0 top-0 w-full z-[-1] brightness-50 bg-[center_top] bg-black/50">
@@ -36,7 +36,7 @@
                                         <span class="p-1 cursor-pointer text-green-800 hover:text-green-900 transition font-bold text-sm bg-green-200 rounded"><i class="fa-solid fa-star mr-1"></i>MEMBER</span>
                                         <span class="opacity-0 absolute bottom-8 left-1/2 -translate-x-1/2 transition duration-100 ease-in-out pointer-events-none text-white text-center flex flex-col items-center group-hover:opacity-100 group-hover:animate-enlarge group-hover:pointer-events-auto">
                                             <span class="bg-neutral-900 text-xs rounded whitespace-nowrap p-1">
-                                                [Our Brand] Member
+                                                NearMe Member
                                             </span>
                                             <span class="w-0 h-0 border-4 border-b-0 border-x-transparent border-t-neutral-900"></span>
                                         </span>
@@ -157,7 +157,14 @@
         {
             @if (viewOffers.Count == 0)
             {
-                <p>No businesses could be found. Try broadening your search criteria.</p>
+                @if (offers.Count == 0)
+                {
+                    <p>This business currently has no offers. Check back later!</p>
+                }
+                else
+                {
+                    <p>No businesses could be found. Try broadening your search criteria.</p>
+                }
             }
             else
             {
@@ -184,6 +191,10 @@
 
     [CascadingParameter]
     public Task<AuthenticationState>? AuthState { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "product")]
+    public string? OpenProduct { get; set; }
 
     private bool canEdit;
     private bool isSignedIn;
@@ -232,6 +243,19 @@
         userRating = await rater.GetCurrentRating(state.User.Identity!.Name!, Id!);
         offers = await offerData.GetByBusinessId(Id!);
         viewOffers = offers;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && string.IsNullOrWhiteSpace(OpenProduct) == false)
+        {
+            var offer = offers?.FirstOrDefault(o => o.Id == OpenProduct);
+
+            if (offer is not null)
+            {
+                await viewProductModal!.Show(offer);
+            }
+        }
     }
 
     private void ToggleIsRating()

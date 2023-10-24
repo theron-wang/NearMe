@@ -8,6 +8,7 @@ internal class OrderDb
         OfferId = order.Offer?.Id;
         PriceWhenBought = order.PriceWhenBought;
         IsDiscounted = order.IsDiscounted;
+        Status = order.Status;
     }
 
     public int Id { get; set; }
@@ -16,6 +17,7 @@ internal class OrderDb
     /// Db does not return <see cref="Offer.Rating"/> or <see cref="Offer.NumberOfRatings"/>
     /// </summary>
     public string? OfferId { get; set; }
+    public OrderStatus Status { get; set; }
     public decimal PriceWhenBought { get; set; }
     public bool IsDiscounted { get; set; }
 }
