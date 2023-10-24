@@ -2,9 +2,21 @@
 
 <PageTitle>LocalBusinessDirectory</PageTitle>
 
-<div class="flex flex-col h-full">
-    <NavBar />
+<div class="flex flex-col h-full" @onwheel="OnScroll">
+    <NavBar @ref="navBar" />
     <main class="px-12 py-8 flex-1">
         @Body
     </main>
 </div>
+
+@code {
+    private NavBar? navBar;
+
+    private void OnScroll(WheelEventArgs e)
+    {
+        if (navBar is not null)
+        {
+            navBar.OnScroll(e);
+        }
+    }
+}
