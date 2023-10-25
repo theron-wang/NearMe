@@ -1,7 +1,7 @@
 ﻿@using LocalBusinessDirectory.Helpers;
 @inject NavigationManager nav
 
-<header class="flex items-center gap-x-8 border-b py-6 px-20 text-sm transition sticky top-0 bg-white z-[50] @(hideHeader ? "-translate-y-full" : "translate-y-0")">
+<header class="flex items-center gap-x-8 py-6 px-20 text-sm transition sticky top-0 @(Transparent ? "bg-transparent" : "bg-white border-b") z-[50] @(hideHeader ? "-translate-y-full" : "translate-y-0")">
     <div class="group relative">
         <div class="cursor-pointer select-none" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
             Catalog <i class="fa-solid fa-caret-down ml-1"></i>
@@ -35,13 +35,16 @@
             </div>
         </div>
     </div>
-    <a href="pricing">
+    <a href="pricing" class="mr-auto">
         Pricing
     </a>
-    <a href="/" class="flex items-center gap-x-2 select-none text-lg font-bold mx-auto">
-        <img src="logo.png" class="h-6" alt="Logo" />
-    </a>
-    <div class="flex items-center gap-x-8 text-sm text-black/80">
+    @if (!Transparent)
+    {
+        <a href="/" class="flex items-center gap-x-2 select-none text-lg font-bold">
+            <img src="logo.png" class="h-6" alt="Logo" />
+        </a>
+    }
+    <div class="flex items-center gap-x-8 text-sm text-black/80 ml-auto">
         <AuthorizeView Context="user">
             <Authorized>
                 <div class="group relative">
@@ -108,6 +111,9 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState>? AuthState { get; set; }
+
+    [Parameter]
+    public bool Transparent { get; set; }
 
     private string? businessId;
 
