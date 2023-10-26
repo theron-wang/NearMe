@@ -2,9 +2,9 @@
 
 @if (Business is not null)
 {
-    <div class="bg-green-50 shadow rounded p-8 cursor-pointer flex transition hover:bg-green-100" @onclick="@(() => nav.NavigateTo($"/business/{Business.Id}"))">
+    <div class="bg-gray-50 shadow rounded-lg p-8 cursor-pointer flex transition hover:bg-gray-100" @onclick="@(() => nav.NavigateTo($"/business/{Business.Id}"))">
         <div class="h-48 max-h-48 w-1/4 min-w-1/4 overflow-hidden">
-            <img src="images/@Business.ImageUrl" class="rounded h-full object-cover" />
+            <img src="images/@Business.ImageUrl" class="rounded w-full h-full object-cover" />
         </div>
         <div class="max-h-48 overflow-hidden px-8 flex-1">
             <div class="font-bold mb-3">@Business.Name</div>

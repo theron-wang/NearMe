@@ -1,0 +1,82 @@
+﻿@using LocalBusinessDirectory.Data.Orders;
+@using LocalBusinessDirectory.Helpers;
+@inject IOrderData orderData
+
+@if (orders is not null)
+{
+    <table class="w-full">
+        <thead>
+            <tr class="text-left border-b">
+                <th class="py-2 pl-2">User</th>
+                <th>Email</th>
+                <th>Product/Service</th>
+                <th>Status</th>
+                <th>Sold for</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize Items="orders" Context="order" SpacerElement="tr">
+                <tr class="border-b even:bg-gray-50 hover:bg-gray-50 even:hover:bg-gray-100 transition">
+                    <td class="py-4 pl-2">@order.User?.Name</td>
+                    <td><a class="text-blue-900" href="mailto:@order.User?.Email">@order.User?.Email</a></td>
+                    <td>@order.Offer?.Name</td>
+                    <td>@order.Status.ToFormattedString()</td>
+                    <td>$@((order.PriceWhenBought * (order.IsDiscounted ? 0.85m : 1)).ToString("0.00"))</td>
+                    <td>
+                        @{
+                            OrderStatus next = OrderStatus.Cancelled;
+                            OrderStatus? prev = null;
+
+                            foreach (var status in Enum.GetValues<OrderStatus>())
+                            {
+                                if (prev == order.Status)
+                                {
+                                    next = status;
+                                    break;
+                                }
+
+                                prev = status;
+                            }
+
+                            if (next < OrderStatus.Cancelled)
+                            {
+                                <button class="bg-green-700 hover:bg-green-800 transition text-white text-sm text-center py-1 px-2 rounded-lg mr-2" @onclick="() => UpdateStatus(order, next)">
+                                    @next.ToFormattedString()
+                                </button>
+                            }
+                            if (order.Status != OrderStatus.Cancelled)
+                            {
+                                <button @onclick="() => UpdateStatus(order, OrderStatus.Cancelled)" title="Cancel">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            }
+                        }
+                    </td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public Business? Business { get; set; }
+
+    private List<OrderWithUser>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await orderData.GetOrdersByBusiness(Business!.Id);
+    }
+
+    private async Task UpdateStatus(OrderWithUser order, OrderStatus status)
+    {
+        var updateOrder = new Order(order);
+
+        updateOrder.Status = status;
+        order.Status = status;
+
+        await orderData.Update(updateOrder);
+    }
+}

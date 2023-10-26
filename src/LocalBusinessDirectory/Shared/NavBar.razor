@@ -1,14 +1,16 @@
 ﻿@using LocalBusinessDirectory.Helpers;
 @inject NavigationManager nav
 
+@inject IJSRuntime js
+
 <header class="flex items-center gap-x-8 py-6 px-20 text-sm transition sticky top-0 @(Transparent ? "bg-transparent" : "bg-white border-b") z-[50] @(hideHeader ? "-translate-y-full" : "translate-y-0")">
     <div class="group relative">
-        <div class="cursor-pointer select-none" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
+        <div class="cursor-pointer select-none @(Transparent ? "text-white" : "")" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
             Catalog <i class="fa-solid fa-caret-down ml-1"></i>
         </div>
-        <div class="opacity-0 absolute top-6 left-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-            <div class="flex flex-col whitespace-nowrap bg-white">
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=restaurant">
+        <div class="opacity-0 absolute top-6 left-0 transition-opacity ease-in-out drop-shadow z-50 pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+            <div class="flex flex-col whitespace-nowrap bg-white rounded">
+                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-t rounded-t" href="catalog?type=restaurant">
                     <div class="inline-block w-4 mr-2">
                         <i class="fa-solid fa-utensils"></i>
                     </div>
@@ -26,7 +28,7 @@
                     </div>
                     Shipping
                 </a>
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog">
+                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-b rounded-b" href="catalog">
                     <div class="inline-block w-4 mr-2">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
@@ -35,7 +37,7 @@
             </div>
         </div>
     </div>
-    <a href="pricing" class="mr-auto">
+    <a href="pricing" class="@(Transparent ? "text-white" : "") mr-auto">
         Pricing
     </a>
     @if (!Transparent)
@@ -48,53 +50,51 @@
         <AuthorizeView Context="user">
             <Authorized>
                 <div class="group relative">
-                    <div class="cursor-pointer select-none font-bold" tabindex="-1">
+                    <div class="cursor-pointer select-none font-bold @(Transparent ? "text-white" : "")" tabindex="-1">
                         @user.User.Identity?.Name
                         <span class="mx-1">
                             <PricingPlanBadge PricingPlan="(PricingPlan)int.Parse(user.User.FindFirst(DirectoryClaimTypes.Plan)!.Value)" />
                         </span>
                         <i class="fa-solid fa-caret-down"></i>
                     </div>
-                    <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                        <div class="opacity-0 absolute top-2 right-0 transition-opacity ease-in-out drop-shadow z-50 rounded pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-                            <div class="flex flex-col whitespace-nowrap bg-white">
-                                @if (string.IsNullOrWhiteSpace(businessId))
-                                {
-                                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="create-business">
-                                        <div class="inline-block w-4 mr-2">
-                                            <i class="fa-solid fa-briefcase"></i>
-                                        </div>
-                                        Create a business
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="business/@businessId">
-                                        <div class="inline-block w-4 mr-2">
-                                            <i class="fa-solid fa-briefcase"></i>
-                                        </div>
-                                        Manage your business
-                                    </a>
-                                }
-                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="pricing">
+                    <div class="opacity-0 absolute top-6 right-0 transition-opacity ease-in-out drop-shadow z-50 pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                        <div class="flex flex-col whitespace-nowrap bg-white rounded">
+                            @if (string.IsNullOrWhiteSpace(businessId))
+                            {
+                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-t rounded-t" href="create-business">
                                     <div class="inline-block w-4 mr-2">
-                                        <i class="fa-solid fa-money-bill"></i>
+                                        <i class="fa-solid fa-briefcase"></i>
                                     </div>
-                                    Change pricing plan
+                                    Create a business
                                 </a>
-                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="orders">
+                            }
+                            else
+                            {
+                                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-t rounded-t" href="business/@businessId">
                                     <div class="inline-block w-4 mr-2">
-                                        <i class="fa-solid fa-bag-shopping"></i>
+                                        <i class="fa-solid fa-briefcase"></i>
                                     </div>
-                                    Your orders
+                                    Manage your business
                                 </a>
-                                <a class="px-4 py-2 transition duration-200 text-red-900 hover:bg-gray-300" href="sign-out">
-                                    <div class="inline-block w-4 mr-2">
-                                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                    </div>
-                                    Sign out
-                                </a>
-                            </div>
+                            }
+                            <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="pricing">
+                                <div class="inline-block w-4 mr-2">
+                                    <i class="fa-solid fa-money-bill"></i>
+                                </div>
+                                Change pricing plan
+                            </a>
+                            <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="orders">
+                                <div class="inline-block w-4 mr-2">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                </div>
+                                Your orders
+                            </a>
+                            <a class="px-4 py-2 transition duration-200 text-red-900 hover:bg-gray-300 hover:rounded-b rounded-b" href="sign-out">
+                                <div class="inline-block w-4 mr-2">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                </div>
+                                Sign out
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -124,9 +124,11 @@
         businessId = (await AuthState!).User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value;
     }
 
-    public void OnScroll(WheelEventArgs e)
+    public async Task OnScroll(WheelEventArgs e)
     {
-        if (e.DeltaY > 75)
+        var scrollbarVisible = await js.InvokeAsync<bool>("scrollbarVisible");
+
+        if (e.DeltaY > 75 && scrollbarVisible)
         {
             hideHeader = true;
         }

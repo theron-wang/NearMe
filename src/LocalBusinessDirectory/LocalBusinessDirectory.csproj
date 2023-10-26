@@ -27,6 +27,7 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\Businesses\View.razor" />
     <_ContentIncludedByDefault Remove="Pages\_AuthLayout.cshtml" />
+    <_ContentIncludedByDefault Remove="Shared\BusinessOrders.razor" />
     <_ContentIncludedByDefault Remove="Shared\EditBusiness.razor" />
   </ItemGroup>
 
@@ -40,6 +41,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Shared\EditBusiness.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\BusinessOrders.razor" />
   </ItemGroup>
 
 </Project>

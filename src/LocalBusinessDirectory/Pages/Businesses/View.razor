@@ -90,93 +90,108 @@
         </div>
     </div>
 }
+@if (canEdit)
+{
+    <div class="px-12 flex">
+        <button class="border border-t-0 rounded-b w-min px-4 py-2 @(showProducts ? "bg-gray-200 hover:bg-gray-300" : "hover:bg-gray-200") transition duration-500 mr-1" @onclick="() => ToggleView(true)">Products</button>
+        <button class="border border-t-0 rounded-b w-min px-4 py-2 @(showProducts ? "hover:bg-gray-200" : "bg-gray-200 hover:bg-gray-300") transition duration-500" @onclick="() => ToggleView(false)">Orders</button>
+    </div>
+}
 <div class="px-12 py-8">
-    <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-3xl">Products and Services</h2>
-        @if (canEdit)
-        {
-            <button class="text-lg" title="New product/service" @onclick="OpenModal"><i class="fa-solid fa-circle-plus"></i></button>
-        }
-    </div>
-    <div class="flex items-center pb-4 border-b mb-8">
-        <div class="relative block mt-2 text-sm mr-4">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </span>
-            <input @bind="name" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Name" aria-label="Search by name" />
-        </div>
-        <div class="relative block mt-2 text-sm">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-                <i class="fa-solid fa-dollar-sign"></i>
-            </span>
-            <input type="number" step="1" min="0" @bind="minPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Minimum price" aria-label="Search by min. price" />
-        </div>
-        <div class="mx-2">
-            &mdash;
-        </div>
-        <div class="relative block mt-2 text-sm mr-auto">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
-                <i class="fa-solid fa-dollar-sign"></i>
-            </span>
-            <input type="number" step="1" min="0" @bind="maxPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Maximum price" aria-label="Search by max. price" />
-        </div>
-        <div class="flex items-center group font-bold text-sm uppercase select-none group relative" tabindex="0">
-            <div class="cursor-pointer">
-                <i class="fa-solid fa-filter mr-2"></i>
-                Filter
-            </div>
-            <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-50 pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
-                <div class="font-bold uppercase mb-2 px-2">Rating</div>
-
-                @for (int i = 1; i <= 5; i++)
-                {
-                    var rating = i;
-                    <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
-                        <span class="mr-2">
-                            <StarDisplay Stars="i" SmallSpacing="true" />
-                        </span>
-                        @i.ToString("0.0")@(i != 5 ? "+" : "") stars
-                    </label>
-                }
-
-                <div class="font-bold uppercase my-2 px-2">Type</div>
-
-                @foreach (var offerType in Enum.GetValues<OfferType>())
-                {
-                    <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300 cursor-pointer">
-                        <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(types.Contains(offerType))" @oninput="() => ToggleOfferType(offerType)" />
-                        @offerType.ToString()
-                    </label>
-                }
-            </div>
-        </div>
-    </div>
-    <div class="min-h-80">
-        @if (viewOffers is not null)
-        {
-            @if (viewOffers.Count == 0)
+    <div class="@(showProducts ? "" : "hidden")">
+        <div class="mb-4 flex items-center justify-between">
+            <h2 class="text-3xl">Products and Services</h2>
+            @if (canEdit)
             {
-                @if (offers.Count == 0)
+                <button class="text-lg" title="New product/service" @onclick="OpenModal"><i class="fa-solid fa-circle-plus"></i></button>
+            }
+        </div>
+        <div class="flex items-center pb-4 border-b mb-8">
+            <div class="relative block mt-2 text-sm mr-4">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input @bind="name" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Name" aria-label="Search by name" />
+            </div>
+            <div class="relative block mt-2 text-sm">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </span>
+                <input type="number" step="1" min="0" @bind="minPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Minimum price" aria-label="Search by min. price" />
+            </div>
+            <div class="mx-2">
+                &mdash;
+            </div>
+            <div class="relative block mt-2 text-sm mr-auto">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                </span>
+                <input type="number" step="1" min="0" @bind="maxPrice" @bind:event="oninput" @bind:after="Filter" class="placeholder:text-neutral-600 block bg-white w-full border border-b-black/10 rounded-full py-2 pl-10 pr-1 focus:outline-none focus:border-green-300 focus:ring-green-300/50 focus:ring-2 transition" placeholder="Maximum price" aria-label="Search by max. price" />
+            </div>
+            <div class="flex items-center group font-bold text-sm uppercase select-none group relative" tabindex="0">
+                <div class="cursor-pointer">
+                    <i class="fa-solid fa-filter mr-2"></i>
+                    Filter
+                </div>
+                <div class="absolute opacity-0 top-8 shadow right-0 rounded bg-white flex flex-col whitespace-nowrap z-50 pointer-events-none transition duration-200 group-focus-within:opacity-100 group-focus-within:pointer-events-auto py-4 text-xs">
+                    <div class="font-bold uppercase mb-2 px-2">Rating</div>
+
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var rating = i;
+                        <label class="px-4 py-2 flex transition duration-200 hover:bg-gray-300 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(searchRating == rating)" @oninput="() => SetSearchRating(rating)" />
+                            <span class="mr-2">
+                                <StarDisplay Stars="i" SmallSpacing="true" />
+                            </span>
+                            @i.ToString("0.0")@(i != 5 ? "+" : "") stars
+                        </label>
+                    }
+
+                    <div class="font-bold uppercase my-2 px-2">Type</div>
+
+                    @foreach (var offerType in Enum.GetValues<OfferType>())
+                    {
+                        <label class="px-4 py-2 transition duration-200 flex items-center hover:bg-gray-300 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 accent-green-400 mr-2" checked="@(types.Contains(offerType))" @oninput="() => ToggleOfferType(offerType)" />
+                            @offerType.ToString()
+                        </label>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="min-h-80">
+            @if (viewOffers is not null)
+            {
+                @if (viewOffers.Count == 0)
                 {
-                    <p>This business currently has no offers. Check back later!</p>
+                    @if (offers!.Count == 0)
+                    {
+                        <p>This business currently has no offers. Check back later!</p>
+                    }
+                    else
+                    {
+                        <p>No businesses could be found. Try broadening your search criteria.</p>
+                    }
                 }
                 else
                 {
-                    <p>No businesses could be found. Try broadening your search criteria.</p>
+                    <div class="grid grid-cols-3 gap-8">
+                        @foreach (var offer in viewOffers)
+                        {
+                            <OfferDisplay Offer="offer" Modal="viewProductModal" />
+                        }
+                    </div>
                 }
             }
-            else
-            {
-                <div class="grid grid-cols-3 gap-8">
-                    @foreach (var offer in viewOffers)
-                    {
-                        <OfferDisplay Offer="offer" Modal="viewProductModal" />
-                    }
-                </div>
-            }
-        }
+        </div>
     </div>
+    @if (canEdit && business is not null)
+    {
+        <div class="@(showProducts ? "hidden" : "")">
+            <BusinessOrders Business="business" />
+        </div>
+    }
 </div>
 @if (canEdit)
 {
@@ -215,6 +230,8 @@
     private int? searchRating;
     private decimal? minPrice;
     private decimal? maxPrice;
+
+    private bool showProducts = true;
 
     private NewProductModal? newProductModal;
     private ViewProductModal? viewProductModal;
@@ -337,5 +354,10 @@
         offers?.Add(offer);
         Filter();
         StateHasChanged();
+    }
+
+    private void ToggleView(bool value)
+    {
+        showProducts = value;
     }
 }

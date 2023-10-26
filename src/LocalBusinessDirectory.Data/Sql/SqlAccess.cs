@@ -29,6 +29,14 @@ public class SqlAccess : ISqlAccess
         return result.ToList();
     }
 
+    public async Task<List<T>> GetAsync<T, TFirst, TSecond, TThird>(string storedProcedure, object parameters, Func<TFirst, TSecond, TThird, T> map, string splitOn = "Id")
+    {
+        using var connection = new SqlConnection(_config.GetConnectionString("Default"));
+
+        var result = await connection.QueryAsync(storedProcedure, map, parameters, splitOn: splitOn, commandType: CommandType.StoredProcedure);
+        return result.ToList();
+    }
+
     public async Task<T?> GetFirstOrDefaultAsync<T>(string storedProcedure, object parameters)
     {
         using var connection = new SqlConnection(_config.GetConnectionString("Default"));

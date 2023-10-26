@@ -30,6 +30,16 @@ public class OrderData : IOrderData
         });
     }
 
+    public async Task<List<OrderWithUser>> GetOrdersByBusiness(string id)
+    {
+        return await _sql.GetAsync<OrderWithUser, OrderWithUser, Offer, User>("spOrders_GetByBusinessId", new { BusinessId = id }, (or, of, u) =>
+        {
+            or.Offer = of;
+            or.User = u;
+            return or;
+        });
+    }
+
     public async Task<bool> HasUserOrderedBefore(string username, string offerId)
     {
         return await _sql.GetFirstOrDefaultAsync<bool>("spOrders_HasUserOrderedBefore", new { Username = username, OfferId = offerId });

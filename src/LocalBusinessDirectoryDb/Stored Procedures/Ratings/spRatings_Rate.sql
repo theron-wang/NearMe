@@ -5,7 +5,7 @@
 AS
 	declare @UserId int = (select Id from [dbo].[Users] where Name=@Username);
 
-	IF NOT EXISTS (SELECT * FROM [dbo].[Ratings] WHERE RelatedTo = @RelatedTo)
+	IF NOT EXISTS (SELECT * FROM [dbo].[Ratings] WHERE RelatedTo = @RelatedTo and UserId=@UserId)
        INSERT INTO [dbo].[Ratings] ([RelatedTo], [UserId], [Rating])
        VALUES (@RelatedTo, @UserId, @Rating)
     ELSE

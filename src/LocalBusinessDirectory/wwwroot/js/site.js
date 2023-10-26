@@ -4,6 +4,15 @@ function previewImage(inputElem, imgElem) {
     imgElem.src = url;
 }
 
+function scroll(ele) {
+    ele.scrollIntoView({ behavior: "smooth" });
+}
+
+function scrollbarVisible() {
+    var element = document.getElementsByTagName("header")[0].parentElement;
+    return element.scrollHeight > element.clientHeight;
+};
+
 async function getPosition() {
     try {
         const pos = await new Promise((resolve, reject) => {

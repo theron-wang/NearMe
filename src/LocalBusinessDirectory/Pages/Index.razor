@@ -2,59 +2,89 @@
 
 @layout NoPaddingLayoutTransparentHeader
 
+@inject IJSRuntime js
+
 <PageTitle>NearMe</PageTitle>
 
 <div class="relative w-full h-[100vh] -mt-20 pt-28">
-    <div class="absolute left-0 top-0 w-full z-[-1] brightness-75 blur-[2px] bg-[center_top] h-[100vh]">
+    <div class="absolute left-0 top-0 w-full z-[-1] brightness-50 blur-[2px] bg-[center_top] h-[100vh]">
         <video class="w-full object-cover h-[100vh]" autoplay loop muted>
             <source src="homepage-bg.mp4" type="video/mp4">
         </video>
     </div>
     <div class="px-12 py-4 h-full flex flex-col items-center">
-        <h1 class="text-center text-green-700 font-bold text-6xl mt-[5%] mb-8">NearMe</h1>
-        <h2 class="text-center text-black text-lg">Local businesses, one click away</h2>
-
-        <a href="join" class="rounded-full px-8 py-3 bg-green-800 hover:bg-green-900 text-white transition mt-4">Join today</a>
+        <h1 class="text-center text-green-500 font-bold text-6xl mt-[5%] mb-8">NearMe</h1>
+        <h2 class="text-center text-white text-lg">Local businesses, one click away</h2>
+        <div class="mt-16">
+            <a href="join" class="rounded-full px-8 py-3 bg-green-500 hover:bg-green-600 text-white transition">Join today</a>
     
-        <button class="animate-bounce mt-auto mb-8 text-3xl stroke-2 text-black/60 font-bold"><i class="fa-solid fa-angle-down"></i></button>
+            <a class="text-green-300 ml-4" href="/catalog">View catalog</a>
+        </div>
+        <button class="animate-bounce mt-auto mb-8 text-3xl stroke-2 text-black/60 font-bold" @onclick="ScrollDown"><i class="fa-solid fa-angle-down"></i></button>
     </div>
+</div>
+
+<div class="bg-green-500 text-white text-xl font-bold w-full py-4 px-20 text-center" @ref="scrollTo">
+    Discover NearMe
 </div>
 
 <div class="grid grid-cols-3 gap-x-8 mb-8 bg-gray-100 px-20 py-8">
     <div class="flex flex-col text-center bg-white p-4 rounded-lg hover:scale-105 transition duration-500">
-        <div class="h-16 rounded-full aspect-square text-3xl text-green-900 mx-auto bg-green-900/10 p-6 flex items-center justify-center">
+        <div class="h-16 w-16 rounded-full aspect-square text-3xl text-green-900 mx-auto bg-green-900/10 p-6 flex items-center justify-center">
             <i class="fa-solid fa-users"></i>
         </div>
         <div class="font-bold text-green-900 mt-4 text-lg">
             Our Customer Base
         </div>
-        <div class="mt-4 px-4 text-sm">
+        <div class="my-4 px-4 text-sm">
             At NearMe, we firmly believe that our customer base is not just a testament to our success but also a powerful magnet for attracting new users to your business. The heart of our directory is a thriving community of local businesses, each with its unique story, offering, and loyal clientele.
         </div>
         <a href="register?business=true" class="text-center bg-green-800 hover:bg-green-900 text-white transition w-min rounded-full whitespace-nowrap px-8 py-3 text-sm mt-auto mx-auto">Register your business</a>
     </div>
     <div class="flex flex-col text-center bg-white p-4 rounded-lg hover:scale-105 transition duration-500">
-        <div class="h-16 rounded-full aspect-square text-3xl text-cyan-900 text-center mx-auto bg-cyan-900/10 p-6 flex items-center justify-center">
+        <div class="h-16 w-16 rounded-full aspect-square text-3xl text-cyan-900 text-center mx-auto bg-cyan-900/10 p-6 flex items-center justify-center">
             <i class="fa-solid fa-money-check-dollar"></i>
         </div>
         <div class="font-bold text-cyan-900 mt-4 text-lg">
             Membership Discounts
         </div>
-        <div class="mt-4 px-4 text-sm">
+        <div class="my-4 px-4 text-sm">
             We're passionate about giving back to our valued users. That's why we've offer our exclusive Pro and Member pricing plans – a way for you to enjoy even greater benefits when you subscribe to our platform. You can change your pricing plan at any time.
         </div>
         <a href="pricing" class="text-center bg-cyan-800 hover:bg-cyan-900 text-white transition w-min rounded-full whitespace-nowrap px-8 py-3 text-sm mt-auto mx-auto">Pricing plans</a>
     </div>
     <div class="flex flex-col text-center bg-white p-4 rounded-lg hover:scale-105 transition duration-500">
-        <div class="h-15 rounded-full aspect-square text-3xl text-yellow-900 text-center mx-auto bg-yellow-900/10 p-6 flex items-center justify-center">
+        <div class="h-16 w-16 rounded-full aspect-square text-3xl text-yellow-900 text-center mx-auto bg-yellow-900/10 p-6 flex items-center justify-center">
             <i class="fa-solid fa-computer"></i>
         </div>
         <div class="font-bold text-yellow-900 mt-4 text-lg">
-            Easy-to-use software
+            User-friendly Software
         </div>
-        <div class="mt-4 px-4 text-sm">
+        <div class="my-4 px-4 text-sm">
             We've taken every step to ensure our software is not just user-friendly but also exceptionally intuitive, making it a breeze for you to place orders and search for local places near you. We believe that technology should empower, not complicate, your daily tasks.
         </div>
         <a href="catalog" class="text-center bg-yellow-800 hover:bg-yellow-900 text-white transition w-min rounded-full whitespace-nowrap px-8 py-3 text-sm mt-auto mx-auto">See our catalog</a>
     </div>
 </div>
+
+<div class="flex gap-x-8">
+    <img src="Program-Demo.png" />
+
+    <div class="p-8">
+        <h2 class="text-green-700 text-4xl mb-8">Support local businesses.</h2>
+        <div class="text-xl text-black/80 pr-40 mb-8">
+            Embrace your community's heartbeat by supporting local businesses. Strengthening local ties, creating jobs, and nurturing the neighborhood you love. View our catalog and discover what's in store!
+        </div>
+
+        <a href="catalog" class="text-center bg-green-800 hover:bg-green-900 text-white transition rounded-full whitespace-nowrap px-8 py-3">See our catalog</a>
+    </div>
+</div>
+
+@code {
+    private ElementReference scrollTo;
+
+    private async Task ScrollDown()
+    {
+        await js.InvokeVoidAsync("scroll", scrollTo);
+    }
+}

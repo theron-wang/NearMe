@@ -91,6 +91,7 @@
     <Build Include="Stored Procedures\Orders\spOrders_GetByUser.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_Update.sql" />
     <Build Include="Stored Procedures\Orders\spOrders_HasUserOrderedBefore.sql" />
+    <Build Include="Stored Procedures\Orders\spOrders_GetByBusinessId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalBusinessDirectoryDb.publish.xml" />

@@ -11,7 +11,7 @@ module.exports = {
   theme: {
       extend: {
           fontFamily: {
-              'default': ['Montserrat', 'Helvetica', 'Arial', 'sans-serif']
+              'default': ['Onest', 'Helvetica', 'Arial', 'sans-serif']
           },
           minWidth: {
               '1/4': "25%",
