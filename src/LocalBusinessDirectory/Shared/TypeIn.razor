@@ -1,0 +1,65 @@
+﻿@using System.Timers;
+@implements IDisposable
+
+<div>
+    @display
+
+    @if (index < Text?.Length + 3 && iterations >= Delay - 1)
+    {
+        <span class="border-x border-white/75 animate-text-blinker"></span>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string? Text { get; set; }
+    [Parameter]
+    public int Delay { get; set; }
+    [Parameter]
+    public int Interval { get; set; } = 300;
+
+    private int index;
+    private int iterations;
+    private string display = "";
+    private System.Timers.Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        timer = new();
+        timer.Interval = Interval;
+        timer.Elapsed += Advance;
+        timer.Enabled = true;
+    }
+
+    private async void Advance(object? sender, ElapsedEventArgs e)
+    {
+        if (iterations < Delay)
+        {
+            iterations++;
+            return;
+        }
+
+        if (index < Text!.Length)
+        {
+            display += Text![index];
+        }
+
+        index++;
+
+        if (index >= Text!.Length + 3)
+        {
+            timer?.Stop();
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (timer is not null)
+        {
+            timer.Elapsed -= Advance;
+            timer.Dispose();
+        }
+    }
+}

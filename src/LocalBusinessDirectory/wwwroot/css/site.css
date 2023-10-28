@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope&family=Onest&family=Oxygen&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Onest&family=Space+Mono&display=swap');
 
 /*
 ! tailwindcss v3.3.5 | MIT License | https://tailwindcss.com
@@ -1003,6 +1003,24 @@ video {
   animation: enlarge-small 0.2s cubic-bezier(0.42, 0, 0.63, 1.77) forwards;
 }
 
+@keyframes text-blinker{
+  0%{
+    opacity: 1;
+  }
+
+  50%{
+    opacity: 0;
+  }
+
+  100%{
+    opacity: 1;
+  }
+}
+
+.animate-text-blinker{
+  animation: 1.5s infinite text-blinker;
+}
+
 .cursor-pointer{
   cursor: pointer;
 }
@@ -1089,6 +1107,11 @@ video {
   row-gap: 2rem;
 }
 
+.gap-x-4{
+  -moz-column-gap: 1rem;
+       column-gap: 1rem;
+}
+
 .overflow-hidden{
   overflow: hidden;
 }
@@ -1139,6 +1162,11 @@ video {
   border-width: 4px;
 }
 
+.border-x{
+  border-left-width: 1px;
+  border-right-width: 1px;
+}
+
 .border-b{
   border-bottom-width: 1px;
 }
@@ -1159,6 +1187,15 @@ video {
 .border-red-300{
   --tw-border-opacity: 1;
   border-color: rgb(252 165 165 / var(--tw-border-opacity));
+}
+
+.border-white{
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.border-white\/75{
+  border-color: rgb(255 255 255 / 0.75);
 }
 
 .border-x-transparent{
@@ -1250,6 +1287,11 @@ video {
   background-color: rgb(22 163 74 / var(--tw-bg-opacity));
 }
 
+.bg-green-700{
+  --tw-bg-opacity: 1;
+  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
+}
+
 .bg-green-800{
   --tw-bg-opacity: 1;
   background-color: rgb(22 101 52 / var(--tw-bg-opacity));
@@ -1296,11 +1338,6 @@ video {
   background-color: rgb(255 255 255 / 0.95);
 }
 
-.bg-yellow-400{
-  --tw-bg-opacity: 1;
-  background-color: rgb(250 204 21 / var(--tw-bg-opacity));
-}
-
 .bg-yellow-800{
   --tw-bg-opacity: 1;
   background-color: rgb(133 77 14 / var(--tw-bg-opacity));
@@ -1308,11 +1345,6 @@ video {
 
 .bg-yellow-900\/10{
   background-color: rgb(113 63 18 / 0.1);
-}
-
-.bg-green-700{
-  --tw-bg-opacity: 1;
-  background-color: rgb(21 128 61 / var(--tw-bg-opacity));
 }
 
 .bg-\[center_top\]{
@@ -1404,6 +1436,11 @@ video {
   padding-right: 2.25rem;
 }
 
+.py-1{
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
 .py-2{
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -1429,11 +1466,6 @@ video {
   padding-bottom: 2rem;
 }
 
-.py-1{
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-
 .pb-4{
   padding-bottom: 1rem;
 }
@@ -1448,6 +1480,10 @@ video {
 
 .pl-12{
   padding-left: 3rem;
+}
+
+.pl-2{
+  padding-left: 0.5rem;
 }
 
 .pl-3{
@@ -1490,16 +1526,16 @@ video {
   padding-top: 2rem;
 }
 
-.pl-2{
-  padding-left: 0.5rem;
-}
-
 .text-left{
   text-align: left;
 }
 
 .text-center{
   text-align: center;
+}
+
+.font-display{
+  font-family: Space Mono, Helvetica, Arial, sans-serif;
 }
 
 .text-2xl{
@@ -1517,8 +1553,8 @@ video {
   line-height: 2.5rem;
 }
 
-.text-6xl{
-  font-size: 3.75rem;
+.text-7xl{
+  font-size: 4.5rem;
   line-height: 1;
 }
 
@@ -1732,11 +1768,6 @@ video {
   --tw-shadow: var(--tw-shadow-colored);
 }
 
-.shadow-green-50{
-  --tw-shadow-color: #f0fdf4;
-  --tw-shadow: var(--tw-shadow-colored);
-}
-
 .blur-\[2px\]{
   --tw-blur: blur(2px);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1851,6 +1882,10 @@ html, body{
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
+.text-shadow {
+  text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000;
+}
+
 .file\:mr-4::file-selector-button{
   margin-right: 1rem;
 }
@@ -1916,11 +1951,6 @@ html, body{
   color: rgb(82 82 82 / var(--tw-text-opacity));
 }
 
-.odd\:bg-gray-50:nth-child(odd){
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
-}
-
 .even\:bg-gray-50:nth-child(even){
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
@@ -1962,6 +1992,11 @@ html, body{
   background-color: rgb(209 213 219 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-gray-50:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-green-100:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(220 252 231 / var(--tw-bg-opacity));
@@ -1982,6 +2017,11 @@ html, body{
   background-color: rgb(21 128 61 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-green-800:hover{
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 101 52 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-green-900:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(20 83 45 / var(--tw-bg-opacity));
@@ -1992,24 +2032,9 @@ html, body{
   background-color: rgb(185 28 28 / var(--tw-bg-opacity));
 }
 
-.hover\:bg-yellow-500:hover{
-  --tw-bg-opacity: 1;
-  background-color: rgb(234 179 8 / var(--tw-bg-opacity));
-}
-
 .hover\:bg-yellow-900:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(113 63 18 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-green-800:hover{
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 101 52 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-gray-50:hover{
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
 .hover\:text-green-700:hover{
@@ -2025,11 +2050,6 @@ html, body{
 .file\:hover\:bg-green-400:hover::file-selector-button{
   --tw-bg-opacity: 1;
   background-color: rgb(74 222 128 / var(--tw-bg-opacity));
-}
-
-.odd\:hover\:bg-gray-100:hover:nth-child(odd){
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 .even\:hover\:bg-gray-100:hover:nth-child(even){

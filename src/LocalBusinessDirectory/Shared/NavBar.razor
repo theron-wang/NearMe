@@ -1,52 +1,56 @@
 ﻿@using LocalBusinessDirectory.Helpers;
-@inject NavigationManager nav
 
+@implements IDisposable
+
+@inject NavigationManager nav
 @inject IJSRuntime js
 
 <header class="flex items-center gap-x-8 py-6 px-20 text-sm transition sticky top-0 @(Transparent ? "bg-transparent" : "bg-white border-b") z-[50] @(hideHeader ? "-translate-y-full" : "translate-y-0")">
-    <div class="group relative">
-        <div class="cursor-pointer select-none @(Transparent ? "text-white" : "")" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
-            Catalog <i class="fa-solid fa-caret-down ml-1"></i>
-        </div>
-        <div class="opacity-0 absolute top-6 left-0 transition-opacity ease-in-out drop-shadow z-50 pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
-            <div class="flex flex-col whitespace-nowrap bg-white rounded">
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-t rounded-t" href="catalog?type=restaurant">
-                    <div class="inline-block w-4 mr-2">
-                        <i class="fa-solid fa-utensils"></i>
-                    </div>
-                    Restaurants
-                </a>
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=store">
-                    <div class="inline-block w-4 mr-2">
-                        <i class="fa-solid fa-store"></i>
-                    </div>
-                    Stores
-                </a>
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=shipping">
-                    <div class="inline-block w-4 mr-2">
-                        <i class="fa-solid fa-truck-fast"></i>
-                    </div>
-                    Shipping
-                </a>
-                <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-b rounded-b" href="catalog">
-                    <div class="inline-block w-4 mr-2">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                    All
-                </a>
+    <div class="mr-auto flex gap-x-8">
+        <div class="group relative">
+            <div class="cursor-pointer select-none @(Transparent ? "text-white" : "")" @ondblclick="@(() => nav.NavigateTo("catalog"))" tabindex="-1">
+                Catalog <i class="fa-solid fa-caret-down ml-1"></i>
+            </div>
+            <div class="opacity-0 absolute top-6 left-0 transition-opacity ease-in-out drop-shadow z-50 pointer-events-none group-focus-within:pointer-events-auto group-focus-within:opacity-100">
+                <div class="flex flex-col whitespace-nowrap bg-white rounded">
+                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-t rounded-t" href="catalog?type=restaurant">
+                        <div class="inline-block w-4 mr-2">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        Restaurants
+                    </a>
+                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=store">
+                        <div class="inline-block w-4 mr-2">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        Stores
+                    </a>
+                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300" href="catalog?type=shipping">
+                        <div class="inline-block w-4 mr-2">
+                            <i class="fa-solid fa-truck-fast"></i>
+                        </div>
+                        Shipping
+                    </a>
+                    <a class="px-4 py-2 transition duration-200 hover:bg-gray-300 hover:rounded-b rounded-b" href="catalog">
+                        <div class="inline-block w-4 mr-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </div>
+                        All
+                    </a>
+                </div>
             </div>
         </div>
+        <a href="pricing" class="@(Transparent ? "text-white" : "")">
+            Pricing
+        </a>
     </div>
-    <a href="pricing" class="@(Transparent ? "text-white" : "") mr-auto">
-        Pricing
-    </a>
     @if (!Transparent)
     {
         <a href="/" class="flex items-center gap-x-2 select-none text-lg font-bold">
             <img src="logo.png" class="h-6" alt="Logo" />
         </a>
     }
-    <div class="flex items-center gap-x-8 text-sm text-black/80 ml-auto">
+    <div class="flex items-center gap-x-4 text-sm text-black/80 ml-auto">
         <AuthorizeView Context="user">
             <Authorized>
                 <div class="group relative">
@@ -103,6 +107,12 @@
                 <a href="join" class="py-2 px-4 bg-green-800 transition text-white rounded shadow-md shadow-green-900/50 text-xs font-normal hover:bg-green-900">
                     Join
                 </a>
+                @if (Transparent)
+                {
+                    <a href="join" class="py-2 px-4 bg-green-800 transition text-white rounded shadow-md shadow-green-900/50 text-xs font-normal hover:bg-green-900">
+                        Login
+                    </a>
+                }
             </NotAuthorized>
         </AuthorizeView>
     </div>
@@ -122,6 +132,14 @@
     protected override async Task OnInitializedAsync()
     {
         businessId = (await AuthState!).User.FindFirst(DirectoryClaimTypes.BusinessOwnerOf)?.Value;
+
+        nav.LocationChanged += LocationChanged;
+    }
+
+    private void LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        hideHeader = false;
+        StateHasChanged();
     }
 
     public async Task OnScroll(WheelEventArgs e)
@@ -138,5 +156,10 @@
         }
 
         StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        nav.LocationChanged -= LocationChanged;
     }
 }

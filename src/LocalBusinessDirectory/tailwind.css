@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Manrope&family=Onest&family=Oxygen&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Onest&family=Space+Mono&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -35,4 +35,8 @@ html, body {
 .auth-bg::before {
     content: "";
     @apply bg-[url('/auth-bg.webp')] bg-cover bg-no-repeat h-full w-full fixed top-0 left-0 z-[-1] blur-sm;
+}
+
+.text-shadow {
+    text-shadow: 2px 2px 0 #000, -2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000;
 }
