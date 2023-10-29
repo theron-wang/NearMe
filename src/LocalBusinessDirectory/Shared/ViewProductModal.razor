@@ -80,7 +80,9 @@
                             @if (hasDiscount)
                             {
                                 <span class="text-green-800">$@((offer.Price * 0.85m).ToString("0.00"))</span>
-                                <span class="line-through text-sm ml-2">$@offer.Price.ToString("0.00")</span>
+                                <span class="line-through text-sm mx-2">$@offer.Price.ToString("0.00")</span>
+
+                                <span class="text-xs text-white p-1 bg-red-800 rounded flex items-center"><i class="fa-solid fa-money-bill mr-1"></i> Discount</span>
                             }
                             else
                             {

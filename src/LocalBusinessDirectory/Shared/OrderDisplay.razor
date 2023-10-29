@@ -18,11 +18,13 @@
             <div class="mb-4 flex items-center text-black/80">
                 Offered by:&nbsp;<a href="/business/@Order.Offer.BusinessId">@Order.BusinessName</a>
             </div>
-            <div class="font-bold">
+            <div class="font-bold flex items-center">
                 @if (Order.IsDiscounted)
                 {
                     @:$@((Order.PriceWhenBought * 0.85m).ToString("0.00"))
-                    <span class="line-through text-sm ml-2">$@Order.PriceWhenBought.ToString("0.00")</span>
+                    <span class="line-through text-sm mx-2">$@Order.PriceWhenBought.ToString("0.00")</span>
+
+                    <span class="text-xs text-white p-1 bg-red-800 rounded flex items-center w-min"><i class="fa-solid fa-money-bill mr-1"></i> Discount</span>
                 }
                 else
                 {
@@ -37,19 +39,19 @@
         <div class="flex items-start gap-4">
             @if (Order.Status == OrderStatus.Fulfilled)
             {
-                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
-                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
-                <a class="" href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
+                <a href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
             }
             else if (Order.Status == OrderStatus.Cancelled)
             {
-                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
-                <a class="" href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a href="/business/@Order.Offer.BusinessId" title="Browse seller"><i class="fa-solid fa-store"></i></a>
             }
             else
             {
-                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
-                <a class="" href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="View @Order.Offer.Type.ToString().ToLower()"><i class="fa-solid fa-eye"></i></a>
+                <a href="/business/@Order.Offer.BusinessId?product=@Order.Offer.Id" title="Leave a rating"><i class="fa-regular fa-star"></i></a>
                 <button title="Cancel" @onclick="Cancel"><i class="fa-solid fa-ban"></i></button>
             }
         </div>
