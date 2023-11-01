@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED36E7C7-B608-4865-81EB-7D003D00756B}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		media\catalog.png = media\catalog.png
+		media\homepage.png = media\homepage.png
+		media\orders.png = media\orders.png
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -16,6 +19,13 @@ EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "LocalBusinessDirectoryDb", "src\LocalBusinessDirectoryDb\LocalBusinessDirectoryDb.sqlproj", "{51086A22-4C1D-490E-83D2-47B808FC780F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocalBusinessDirectory.Validation", "src\LocalBusinessDirectory.Validation\LocalBusinessDirectory.Validation.csproj", "{4CE21128-DBBD-4B0E-8769-60A377A0E234}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "media", "media", "{840CC6C8-FE62-49EB-89BA-EBC7AD670444}"
+	ProjectSection(SolutionItems) = preProject
+		media\catalog.png = media\catalog.png
+		media\homepage.png = media\homepage.png
+		media\orders.png = media\orders.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +54,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{840CC6C8-FE62-49EB-89BA-EBC7AD670444} = {ED36E7C7-B608-4865-81EB-7D003D00756B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5CA98DE-3BE1-4E52-84B2-2205A2F11490}
