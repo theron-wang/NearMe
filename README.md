@@ -13,7 +13,8 @@ Catalog showing local businesses, auto-sorted based on client user distance
 
 
 ![orders](./media/orders.png)
-Users can order and rate products offered by each business on their page. Businesses can later update the status which users can see on their end.
+Users can order and rate products and services offered by each business on their page. These orders, as well as their status, can also
+be updated on the user's end of things as well.
 
 ## Running the App
 
