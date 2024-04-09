@@ -9,7 +9,7 @@ Homepage of NearMe:
 
 
 ![catalog](./media/catalog.png)
-Catalog showing local businesses, auto-sorted based on client user distance:
+Catalog showing local businesses, auto-sorted for the user based on client distance:
 
 
 ![orders](./media/orders.png)
